@@ -158,7 +158,7 @@ ON CONFLICT (email) DO NOTHING;
 CREATE OR REPLACE VIEW admin_password_activity AS
 SELECT 
     aph.id,
-    au.email,
+    aph.email,
     au.full_name,
     aph.change_type,
     aph.changed_by,

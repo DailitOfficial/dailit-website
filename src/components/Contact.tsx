@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { createContactSubmission } from '../lib/supabase'
 
 interface ContactFormData {
   name: string
@@ -21,6 +20,20 @@ export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [supabaseFunctions, setSupabaseFunctions] = useState<any>(null)
+
+  useEffect(() => {
+    const loadSupabase = async () => {
+      try {
+        const supabaseModule = await import('../lib/supabase')
+        setSupabaseFunctions(supabaseModule)
+      } catch (error) {
+        console.error('Error loading Supabase:', error)
+      }
+    }
+    
+    loadSupabase()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,8 +41,12 @@ export function Contact() {
     setError(null)
     
     try {
+      if (!supabaseFunctions) {
+        throw new Error('Supabase not loaded')
+      }
+
       // Save contact submission to Supabase
-      await createContactSubmission({
+      await supabaseFunctions.createContactSubmission({
         name: formData.name,
         email: formData.email,
         company: formData.company || undefined,

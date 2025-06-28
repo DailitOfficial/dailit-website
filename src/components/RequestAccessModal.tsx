@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from './ui/Button'
-import { createLead } from '../lib/supabase'
 
 interface RequestAccessModalProps {
   isOpen: boolean
@@ -20,6 +19,22 @@ const RequestAccessModal = ({ isOpen, onClose }: RequestAccessModalProps) => {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [supabaseFunctions, setSupabaseFunctions] = useState<any>(null)
+
+  useEffect(() => {
+    const loadSupabase = async () => {
+      try {
+        const supabaseModule = await import('../lib/supabase')
+        setSupabaseFunctions(supabaseModule)
+      } catch (error) {
+        console.error('Error loading Supabase:', error)
+      }
+    }
+    
+    if (isOpen) {
+      loadSupabase()
+    }
+  }, [isOpen])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,8 +42,12 @@ const RequestAccessModal = ({ isOpen, onClose }: RequestAccessModalProps) => {
     setError(null)
 
     try {
+      if (!supabaseFunctions) {
+        throw new Error('Supabase not loaded')
+      }
+
       // Save lead to Supabase
-      await createLead({
+      await supabaseFunctions.createLead({
         business_name: formData.businessName,
         full_name: formData.fullName,
         email: formData.email,

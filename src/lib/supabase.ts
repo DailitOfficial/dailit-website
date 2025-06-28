@@ -258,8 +258,25 @@ export const resetPasswordForAdmin = async (email: string) => {
   try {
     console.log('Attempting password reset for:', email)
     
+    // First, let's try a simple count query to see if we can access the table at all
+    console.log('Testing table access...')
+    const { count, error: countError } = await supabase
+      .from('admin_users')
+      .select('*', { count: 'exact', head: true })
+    
+    console.log('Table count result:', { count, countError })
+    
+    // Now try to get all admin users (for debugging)
+    console.log('Getting all admin users...')
+    const { data: allAdmins, error: allError } = await supabase
+      .from('admin_users')
+      .select('email, is_active, full_name')
+    
+    console.log('All admin users:', { allAdmins, allError })
+    
     // First, check if the email exists in admin_users table and is active
     // Use .maybeSingle() instead of .single() to avoid JSON errors when no rows found
+    console.log('Querying for specific admin user...')
     const { data: adminUser, error: adminError } = await supabase
       .from('admin_users')
       .select('email, is_active, full_name')

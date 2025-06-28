@@ -56,7 +56,7 @@ export function About({ onRequestAccess }: AboutProps) {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -82,7 +82,7 @@ export function About({ onRequestAccess }: AboutProps) {
         </motion.div>
 
         {/* Company Metrics */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -105,7 +105,7 @@ export function About({ onRequestAccess }: AboutProps) {
                 </div>
                 <div className="text-sm font-medium text-gray-900 mb-1">
                   {metric.label}
-                </div>
+              </div>
                 <div className="text-xs text-blue-600">
                   {metric.subtext}
                 </div>
@@ -115,10 +115,10 @@ export function About({ onRequestAccess }: AboutProps) {
         </motion.div>
 
                  {/* Our Story */}
-         <motion.div
+        <motion.div
            initial={{ opacity: 0, y: 20 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
            transition={{ duration: 0.6, delay: 0.3 }}
            className="mb-20"
          >
@@ -127,7 +127,7 @@ export function About({ onRequestAccess }: AboutProps) {
              <div className="relative p-8 lg:p-12">
                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-cal-sans font-normal text-gray-900 mb-8 text-center">
                  {ourStory.title}
-               </h3>
+            </h3>
                
                <div className="max-w-4xl mx-auto space-y-6">
                  {ourStory.content.map((paragraph, index) => (
@@ -144,14 +144,14 @@ export function About({ onRequestAccess }: AboutProps) {
                  ))}
                </div>
              </div>
-           </div>
+          </div>
          </motion.div>
 
                  {/* Our Mission */}
-         <motion.div
+              <motion.div
            initial={{ opacity: 0, y: 20 }}
            whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
+                viewport={{ once: true }}
            transition={{ duration: 0.6, delay: 0.4 }}
            className="mb-20"
          >
@@ -164,31 +164,31 @@ export function About({ onRequestAccess }: AboutProps) {
                
                <p className="text-lg text-gray-600 leading-relaxed max-w-4xl mx-auto">
                  {ourMission.description}
-               </p>
-             </div>
-           </div>
-         </motion.div>
+                        </p>
+                      </div>
+          </div>
+        </motion.div>
 
                  {/* Why We're Different */}
-         <motion.div
+        <motion.div
            initial={{ opacity: 0, y: 20 }}
            whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
+          viewport={{ once: true }}
            transition={{ duration: 0.6, delay: 0.5 }}
            className="mb-20"
-         >
-           <div className="text-center mb-12">
+        >
+          <div className="text-center mb-12">
              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-cal-sans font-normal text-gray-900 mb-4">
                {whyDifferent.title}
-             </h3>
-             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            </h3>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                We're not just another communication platform. Here's what makes us different.
-             </p>
-           </div>
+            </p>
+          </div>
 
            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
              {whyDifferent.points.map((point, index) => (
-               <motion.div
+              <motion.div
                  key={index}
                  initial={{ opacity: 0, y: 20 }}
                  whileInView={{ opacity: 1, y: 0 }}
@@ -200,18 +200,18 @@ export function About({ onRequestAccess }: AboutProps) {
                  <div className="relative p-8 text-center">
                    <h4 className="text-xl font-cal-sans font-normal text-gray-900 mb-4">
                      {point.title}
-                   </h4>
-                   <p className="text-gray-600 leading-relaxed">
+                    </h4>
+                    <p className="text-gray-600 leading-relaxed">
                      {point.description}
-                   </p>
+                    </p>
                  </div>
-               </motion.div>
-             ))}
-           </div>
-         </motion.div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
 
-      </div>
+              </div>
     </section>
   )
 } 

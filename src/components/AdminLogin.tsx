@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { signInWithEmail, resetPasswordForAdmin, supabase } from '../lib/supabase'
+import { signInWithEmail, resetPasswordForAdmin, recordPasswordChange, supabase } from '../lib/supabase'
 
 interface AdminLoginProps {
   onLoginSuccess: () => void
@@ -129,6 +129,18 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
         setError(error.message || 'Failed to update password.')
       } else {
         console.log('Password updated successfully')
+        
+        // Record the password change in the database
+        try {
+          const { data: { user } } = await supabase.auth.getUser()
+          if (user?.email) {
+            await recordPasswordChange(user.email, 'reset', 'Password reset via email link')
+          }
+        } catch (recordError) {
+          console.log('Could not record password change:', recordError)
+          // Don't fail the password update if we can't record it
+        }
+        
         setResetMessage('Password updated successfully! You can now sign in.')
         setNewPassword('')
         setConfirmPassword('')

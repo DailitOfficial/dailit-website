@@ -279,7 +279,7 @@ export const resetPasswordForAdmin = async (email: string) => {
     console.log('Querying for specific admin user...')
     const { data: adminUser, error: adminError } = await supabase
       .from('admin_users')
-      .select('email, is_active, full_name')
+      .select('email, is_active, full_name, password_reset_count')
       .eq('email', email)
       .eq('is_active', true)
       .maybeSingle()
@@ -338,6 +338,21 @@ export const resetPasswordForAdmin = async (email: string) => {
     }
 
     console.log('Reset email sent successfully')
+    
+    // Update reset count in database
+    try {
+      await supabase
+        .from('admin_users')
+        .update({ 
+          password_reset_count: adminUser.password_reset_count ? adminUser.password_reset_count + 1 : 1,
+          last_password_reset: new Date().toISOString()
+        })
+        .eq('email', email)
+    } catch (updateError) {
+      console.log('Could not update reset count:', updateError)
+      // Don't fail the reset if we can't update the count
+    }
+
     return {
       success: true,
       message: 'Password reset email sent successfully.'
@@ -349,5 +364,83 @@ export const resetPasswordForAdmin = async (email: string) => {
       success: false,
       message: `Unexpected error: ${err.message || JSON.stringify(err)}`
     }
+  }
+}
+
+// Function to record password changes in database
+export const recordPasswordChange = async (
+  email: string, 
+  changeType: 'reset' | 'manual_update' | 'initial_setup' = 'manual_update',
+  notes?: string
+) => {
+  try {
+    // Get client IP (this is a simplified version - in production you'd get real IP)
+    const clientInfo = {
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+      // Note: Getting real client IP requires server-side implementation
+      ip: '127.0.0.1' // Placeholder
+    }
+
+    const { error } = await supabase.rpc('record_password_change', {
+      user_email: email,
+      change_type: changeType,
+      changed_by_email: 'self',
+      user_ip: clientInfo.ip,
+      user_agent_string: clientInfo.userAgent,
+      change_notes: notes || `Password ${changeType} via admin interface`
+    })
+
+    if (error) {
+      console.error('Error recording password change:', error)
+    } else {
+      console.log('Password change recorded successfully')
+    }
+  } catch (err) {
+    console.error('Error recording password change:', err)
+  }
+}
+
+// Function to get admin password history
+export const getAdminPasswordHistory = async (email?: string) => {
+  try {
+    let query = supabase
+      .from('admin_password_activity')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (email) {
+      query = query.eq('email', email)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error('Error fetching password history:', error)
+      throw error
+    }
+
+    return data
+  } catch (err) {
+    console.error('Error getting password history:', err)
+    throw err
+  }
+}
+
+// Function to get admin users summary with password info
+export const getAdminUsersSummary = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('admin_users_summary')
+      .select('*')
+
+    if (error) {
+      console.error('Error fetching admin users summary:', error)
+      throw error
+    }
+
+    return data
+  } catch (err) {
+    console.error('Error getting admin users summary:', err)
+    throw err
   }
 } 

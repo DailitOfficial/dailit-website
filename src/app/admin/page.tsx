@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 
 // Dynamically import components to prevent SSR issues
 const AdminLogin = dynamic(() => import('../../components/AdminLogin'), { ssr: false })
+const AdminDashboard = dynamic(() => import('../../components/AdminDashboard'), { ssr: false })
 
 // Dynamically import Supabase functions to prevent SSR issues
 const useSupabase = () => {
@@ -31,7 +32,7 @@ export default function AdminPage() {
   const [leads, setLeads] = useState<any[]>([])
   const [contacts, setContacts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'leads' | 'contacts'>('leads')
+  const [activeTab, setActiveTab] = useState<'leads' | 'contacts' | 'password'>('leads')
   const [error, setError] = useState<string | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [adminUser, setAdminUser] = useState<any | null>(null)
@@ -269,13 +270,23 @@ export default function AdminPage() {
               </button>
               <button
                 onClick={() => setActiveTab('contacts')}
-                className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
+                className={`py-3 sm:py-4 px-1 mr-6 sm:mr-8 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
                   activeTab === 'contacts'
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
                 Contact Forms ({contacts.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('password')}
+                className={`py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap ${
+                  activeTab === 'password'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Password Management
               </button>
             </nav>
           </div>
@@ -406,7 +417,7 @@ export default function AdminPage() {
                   )}
                 </div>
               </>
-                          ) : (
+                          ) : activeTab === 'contacts' ? (
                 <>
                   {/* Mobile Cards */}
                   <div className="block sm:hidden space-y-4">
@@ -499,6 +510,8 @@ export default function AdminPage() {
                     )}
                   </div>
                 </>
+              ) : (
+                <AdminDashboard />
               )}
           </div>
         </div>

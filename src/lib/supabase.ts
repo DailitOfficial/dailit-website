@@ -259,14 +259,16 @@ export const resetPasswordForAdmin = async (email: string) => {
     console.log('Attempting password reset for:', email)
     
     // First, check if the email exists in admin_users table and is active
+    // Use .maybeSingle() instead of .single() to avoid JSON errors when no rows found
     const { data: adminUser, error: adminError } = await supabase
       .from('admin_users')
       .select('email, is_active, full_name')
       .eq('email', email)
       .eq('is_active', true)
-      .single()
+      .maybeSingle()
 
     console.log('Admin user query result:', { adminUser, adminError })
+    console.log('Full error details:', JSON.stringify(adminError, null, 2))
 
     if (adminError) {
       console.error('Database error checking admin user:', adminError)
@@ -289,7 +291,7 @@ export const resetPasswordForAdmin = async (email: string) => {
       
       return {
         success: false,
-        message: `Database error: ${adminError.message}`
+        message: `Database error: ${adminError.message || JSON.stringify(adminError)}`
       }
     }
 
@@ -301,7 +303,8 @@ export const resetPasswordForAdmin = async (email: string) => {
       }
     }
 
-    console.log('Admin user found, sending reset email...')
+    console.log('Admin user found:', adminUser)
+    console.log('Sending reset email...')
 
     // If admin user exists and is active, send reset email
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -310,6 +313,7 @@ export const resetPasswordForAdmin = async (email: string) => {
 
     if (error) {
       console.error('Error sending reset email:', error)
+      console.error('Reset email error details:', JSON.stringify(error, null, 2))
       return {
         success: false,
         message: error.message || 'Failed to send reset email.'
@@ -323,9 +327,10 @@ export const resetPasswordForAdmin = async (email: string) => {
     }
   } catch (err: any) {
     console.error('Reset password error:', err)
+    console.error('Error details:', JSON.stringify(err, null, 2))
     return {
       success: false,
-      message: err.message || 'An unexpected error occurred.'
+      message: `Unexpected error: ${err.message || JSON.stringify(err)}`
     }
   }
 } 

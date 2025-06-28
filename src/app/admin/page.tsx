@@ -1,49 +1,76 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getLeads, getContactSubmissions, updateLeadStatus, getCurrentAdminUser, signOut, onAuthStateChange, updateLastLogin, type Lead, type ContactSubmission, type AdminUser } from '../../lib/supabase'
-import AdminLogin from '../../components/AdminLogin'
+import dynamic from 'next/dynamic'
+
+// Dynamically import components to prevent SSR issues
+const AdminLogin = dynamic(() => import('../../components/AdminLogin'), { ssr: false })
+
+// Dynamically import Supabase functions to prevent SSR issues
+const useSupabase = () => {
+  const [supabaseFunctions, setSupabaseFunctions] = useState<any>(null)
+  
+  useEffect(() => {
+    const loadSupabase = async () => {
+      try {
+        const supabaseModule = await import('../../lib/supabase')
+        setSupabaseFunctions(supabaseModule)
+      } catch (error) {
+        console.error('Error loading Supabase:', error)
+      }
+    }
+    
+    loadSupabase()
+  }, [])
+  
+  return supabaseFunctions
+}
 
 export default function AdminPage() {
-  const [leads, setLeads] = useState<Lead[]>([])
-  const [contacts, setContacts] = useState<ContactSubmission[]>([])
+  const supabaseFunctions = useSupabase()
+  const [leads, setLeads] = useState<any[]>([])
+  const [contacts, setContacts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'leads' | 'contacts'>('leads')
   const [error, setError] = useState<string | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [adminUser, setAdminUser] = useState<AdminUser | null>(null)
+  const [adminUser, setAdminUser] = useState<any | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
 
   useEffect(() => {
-    checkAuth()
-    
-    // Listen to auth state changes
-    const { data: { subscription } } = onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        await checkAuth()
-      } else if (event === 'SIGNED_OUT') {
-        setIsAuthenticated(false)
-        setAdminUser(null)
-        setAuthLoading(false)
-      }
-    })
+    if (supabaseFunctions) {
+      checkAuth()
+      
+      // Listen to auth state changes
+      const { data: { subscription } } = supabaseFunctions.onAuthStateChange(async (event: string, session: any) => {
+        if (event === 'SIGNED_IN' && session) {
+          await checkAuth()
+        } else if (event === 'SIGNED_OUT') {
+          setIsAuthenticated(false)
+          setAdminUser(null)
+          setAuthLoading(false)
+        }
+      })
 
-    return () => subscription.unsubscribe()
-  }, [])
+      return () => subscription.unsubscribe()
+    }
+  }, [supabaseFunctions])
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && supabaseFunctions) {
       loadData()
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, supabaseFunctions])
 
   const checkAuth = async () => {
+    if (!supabaseFunctions) return
+    
     try {
-      const adminUser = await getCurrentAdminUser()
+      const adminUser = await supabaseFunctions.getCurrentAdminUser()
       if (adminUser) {
         setAdminUser(adminUser)
         setIsAuthenticated(true)
-        await updateLastLogin(adminUser.email)
+        await supabaseFunctions.updateLastLogin(adminUser.email)
       } else {
         setIsAuthenticated(false)
       }
@@ -56,11 +83,13 @@ export default function AdminPage() {
   }
 
   const loadData = async () => {
+    if (!supabaseFunctions) return
+    
     try {
       setLoading(true)
       const [leadsData, contactsData] = await Promise.all([
-        getLeads(),
-        getContactSubmissions()
+        supabaseFunctions.getLeads(),
+        supabaseFunctions.getContactSubmissions()
       ])
       setLeads(leadsData || [])
       setContacts(contactsData || [])
@@ -72,9 +101,11 @@ export default function AdminPage() {
     }
   }
 
-  const handleStatusUpdate = async (leadId: string, status: Lead['status']) => {
+  const handleStatusUpdate = async (leadId: string, status: string) => {
+    if (!supabaseFunctions) return
+    
     try {
-      await updateLeadStatus(leadId, status)
+      await supabaseFunctions.updateLeadStatus(leadId, status)
       await loadData() // Refresh data
     } catch (err) {
       console.error('Error updating status:', err)
@@ -106,8 +137,10 @@ export default function AdminPage() {
   }
 
   const handleSignOut = async () => {
+    if (!supabaseFunctions) return
+    
     try {
-      await signOut()
+      await supabaseFunctions.signOut()
       setIsAuthenticated(false)
       setAdminUser(null)
     } catch (err) {
@@ -119,12 +152,14 @@ export default function AdminPage() {
     checkAuth()
   }
 
-  if (authLoading) {
+  if (!supabaseFunctions || authLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Checking authentication...</p>
+          <p className="text-gray-600">
+            {!supabaseFunctions ? 'Loading admin system...' : 'Checking authentication...'}
+          </p>
         </div>
       </div>
     )
@@ -276,7 +311,7 @@ export default function AdminPage() {
                         <span className="text-xs text-gray-500">{formatDate(lead.created_at)}</span>
                         <select
                           value={lead.status}
-                          onChange={(e) => handleStatusUpdate(lead.id, e.target.value as Lead['status'])}
+                          onChange={(e) => handleStatusUpdate(lead.id, e.target.value)}
                           className="text-xs border rounded px-2 py-1"
                         >
                           <option value="new">New</option>
@@ -348,11 +383,11 @@ export default function AdminPage() {
                             {formatDate(lead.created_at)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <select
-                              value={lead.status}
-                              onChange={(e) => handleStatusUpdate(lead.id, e.target.value as Lead['status'])}
-                              className="text-xs border rounded px-2 py-1"
-                            >
+                                                      <select
+                            value={lead.status}
+                            onChange={(e) => handleStatusUpdate(lead.id, e.target.value)}
+                            className="text-xs border rounded px-2 py-1"
+                          >
                               <option value="new">New</option>
                               <option value="contacted">Contacted</option>
                               <option value="qualified">Qualified</option>

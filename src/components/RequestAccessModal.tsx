@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from './ui/Button'
+import { createLead } from '../lib/supabase'
 
 interface RequestAccessModalProps {
   isOpen: boolean
@@ -17,12 +18,33 @@ const RequestAccessModal = ({ isOpen, onClose }: RequestAccessModalProps) => {
     numberOfUsers: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log('Form submitted:', formData)
-    setIsSubmitted(true)
+    setIsSubmitting(true)
+    setError(null)
+
+    try {
+      // Save lead to Supabase
+      await createLead({
+        business_name: formData.businessName,
+        full_name: formData.fullName,
+        email: formData.email,
+        industry: formData.industry,
+        number_of_users: formData.numberOfUsers,
+        source: 'request_access_modal'
+      })
+
+      console.log('Lead saved successfully:', formData)
+      setIsSubmitted(true)
+    } catch (err) {
+      console.error('Error saving lead:', err)
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -34,6 +56,8 @@ const RequestAccessModal = ({ isOpen, onClose }: RequestAccessModalProps) => {
 
   const handleClose = () => {
     setIsSubmitted(false)
+    setIsSubmitting(false)
+    setError(null)
     setFormData({
       businessName: '',
       fullName: '',
@@ -88,6 +112,13 @@ const RequestAccessModal = ({ isOpen, onClose }: RequestAccessModalProps) => {
                   Tell us about your business and we'll get you set up with Dialit.
                 </p>
               </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                  <p className="text-red-700 text-sm">{error}</p>
+                </div>
+              )}
 
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -190,9 +221,10 @@ const RequestAccessModal = ({ isOpen, onClose }: RequestAccessModalProps) => {
                   type="submit"
                   variant="primary"
                   size="md"
-                  className="w-full bg-primary hover:bg-primary-800 text-white border-0 font-normal mt-6"
+                  className="w-full bg-primary hover:bg-primary-800 text-white border-0 font-normal mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
                 >
-                  Submit Request
+                  {isSubmitting ? 'Submitting...' : 'Submit Request'}
                 </Button>
               </form>
             </>

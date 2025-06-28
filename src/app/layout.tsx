@@ -1,77 +1,102 @@
-import type { Metadata, Viewport } from 'next'
-import '@/app/globals.css'
+import type { Metadata } from "next";
+import localFont from "next/font/local";
+import "./globals.css";
+
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff2",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff2",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://dailit.com'),
-  title: 'Dail it - Simple Business Communication Platform',
-  description: 'Transform your business communications with Dail it. Professional phone systems, call centers, and AI-powered features made simple and affordable for businesses of all sizes.',
-  keywords: [
-    'business communication platform',
-    'business phone system',
-    'DailQ AI',
-    'business communications',
-    'call center software',
-    'VoIP solutions',
-    'unified communications',
-    'small business phone',
-    'startup communication',
-    'affordable phone system'
-  ],
-  authors: [{ name: 'Dail it' }],
-  creator: 'Dail it',
-  publisher: 'Dail it',
-  robots: {
-    index: true,
-    follow: true,
+  title: "Dail it - Simple Business Phone System",
+  description: "Transform your business communications with Dail it's simple, powerful phone system. Get professional features, DailQ AI automation, and seamless integrations.",
+  keywords: "business phone system, VoIP, DailQ AI, call center, unified messaging, business communications, phone service",
+  authors: [{ name: "Dail it" }],
+  creator: "Dail it",
+  publisher: "Dail it",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon-16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/icon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
     shortcut: '/favicon.ico',
-    apple: '/favicon.ico',
   },
+  manifest: '/manifest.json',
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://dailit.com',
-    title: 'Dail it - Simple Business Communication Platform',
-    description: 'Transform your business communications with Dail it. Professional phone systems, call centers, and AI-powered features made simple and affordable.',
-    siteName: 'Dail it',
+    title: "Dail it - Simple Business Phone System",
+    description: "Transform your business communications with Dail it's simple, powerful phone system.",
+    url: "https://dailit.com",
+    siteName: "Dail it",
+    locale: "en_US",
+    type: "website",
     images: [
       {
-        url: '/ai.png',
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: 'Dail it - Business Communication Platform',
+        alt: "Dail it - Simple Business Phone System",
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Dail it - Simple Business Communication Platform',
-    description: 'Transform your business communications with Dail it. Professional phone systems, call centers, and AI-powered features made simple and affordable.',
-    images: ['/ai.png'],
+    card: "summary_large_image",
+    title: "Dail it - Simple Business Phone System",
+    description: "Transform your business communications with Dail it's simple, powerful phone system.",
+    images: ["/og-image.png"],
   },
-}
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-}
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+  },
+};
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cal+Sans:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className="antialiased" suppressHydrationWarning={true}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         {children}
       </body>
     </html>
-  )
+  );
 } 

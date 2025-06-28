@@ -1,0 +1,27 @@
+{
+  "name": "Dail it - Business Phone System",
+  "short_name": "Dail it",
+  "description": "Simple business phone system with AI automation",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["business", "productivity", "communication"],
+  "lang": "en-US",
+  "dir": "ltr"
+} 

@@ -251,4 +251,48 @@ export const updateLastLogin = async (email: string) => {
 // Listen to auth state changes
 export const onAuthStateChange = (callback: (event: string, session: any) => void) => {
   return supabase.auth.onAuthStateChange(callback)
+}
+
+// Password reset for admin users only
+export const resetPasswordForAdmin = async (email: string) => {
+  try {
+    // First, check if the email exists in admin_users table and is active
+    const { data: adminUser, error: adminError } = await supabase
+      .from('admin_users')
+      .select('email, is_active')
+      .eq('email', email)
+      .eq('is_active', true)
+      .single()
+
+    if (adminError || !adminUser) {
+      return {
+        success: false,
+        message: 'Email not found in admin users. Only existing admin accounts can reset passwords.'
+      }
+    }
+
+    // If admin user exists and is active, send reset email
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/admin`
+    })
+
+    if (error) {
+      console.error('Error sending reset email:', error)
+      return {
+        success: false,
+        message: error.message || 'Failed to send reset email.'
+      }
+    }
+
+    return {
+      success: true,
+      message: 'Password reset email sent successfully.'
+    }
+  } catch (err: any) {
+    console.error('Reset password error:', err)
+    return {
+      success: false,
+      message: err.message || 'An unexpected error occurred.'
+    }
+  }
 } 

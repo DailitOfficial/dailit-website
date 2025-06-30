@@ -465,7 +465,6 @@ export function FeatureComparison() {
                   { value: "70%", label: "Profit Margins" },
                   { value: "99.999%", label: "Uptime SLA" },
                   { value: "24/7/365", label: "US Support" },
-                  { value: "FREE", label: "White Label" },
                   { value: "100+", label: "Integrations" },
                   { value: "UNLIMITED", label: "API Access" },
                   { value: "SOC 2", label: "Compliant" },

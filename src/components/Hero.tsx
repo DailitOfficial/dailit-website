@@ -11,16 +11,16 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
   const [currentTagline, setCurrentTagline] = useState(0)
   
   const taglines = [
-    "Simplified. Unified. Amplified.",
     "Smarter. Faster. Clearer.",
     "Hosted. Routed. Delivered.",
     "Connect. Collaborate. Close.",
     "Call. Text. Automate.",
-    "Modern. Mobile. Managed.",
     "Track. Route. Resolve.",
     "Answer. Analyze. Act.",
     "Click. Speak. Scale.",
-    "Secure. Stable. Streamlined."
+    "Secure. Stable. Streamlined.",
+    "Simplified. Unified. Amplified.",
+    "Modern. Mobile. Managed."
   ]
 
   useEffect(() => {

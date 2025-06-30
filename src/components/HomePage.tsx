@@ -11,16 +11,20 @@ import { About } from './About'
 import { Contact } from './Contact'
 import Footer from './Footer'
 import RequestAccessModal from './RequestAccessModal'
+import LoginModal from './LoginModal'
 
 const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
+  const openLoginModal = () => setIsLoginModalOpen(true)
+  const closeLoginModal = () => setIsLoginModalOpen(false)
 
   return (
     <>
-      <Header onRequestAccess={openModal} />
+      <Header onRequestAccess={openModal} onLoginClick={openLoginModal} />
       <div className="pt-16">
         <Hero onRequestAccess={openModal} />
         <Services />
@@ -32,6 +36,7 @@ const HomePage = () => {
         <Footer />
       </div>
       <RequestAccessModal isOpen={isModalOpen} onClose={closeModal} />
+      <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
     </>
   )
 }

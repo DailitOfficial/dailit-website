@@ -1,11 +1,10 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background circle -->
-  <rect width="512" height="512" rx="128" fill="#3b82f6"/>
+  <!-- Version 2.0: Black rounded square with white D and purple dot - matches header exactly -->
+  <rect width="512" height="512" rx="64" fill="#101828"/>
   
-  <!-- Main D letter -->
-  <path d="M156 156h120c66.274 0 120 53.726 120 120s-53.726 120-120 120H156V156z" fill="white"/>
-  <path d="M196 196v120h80c44.183 0 80-35.817 80-80s-35.817-80-80-80h-80z" fill="#3b82f6"/>
+  <!-- White D letter - matches the header styling -->
+  <text x="256" y="340" text-anchor="middle" font-family="Cal Sans, system-ui, -apple-system, sans-serif" font-size="280" font-weight="500" fill="white">D</text>
   
-  <!-- Accent dot -->
-  <circle cx="384" cy="176" r="24" fill="#f59e0b"/>
+  <!-- Purple accent dot - matches bg-accent (#7c3aed) -->
+  <circle cx="432" cy="80" r="24" fill="#7c3aed"/>
 </svg> 

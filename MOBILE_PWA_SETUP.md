@@ -36,16 +36,18 @@
 ## Mobile Browser Support
 
 ### Chrome Mobile (Android)
-- ✅ Automatic install prompt after 5 seconds
+- ✅ Install prompt triggered by login button click
+- ✅ Beautiful gradient banner with enhanced design
 - ✅ beforeinstallprompt event support
 - ✅ Full notification support
 - ✅ Media permissions on install
 
 ### iOS Safari
-- ⚠️ Manual installation required (Share → Add to Home Screen)
+- ✅ Login-triggered install instructions
+- ✅ Enhanced iOS-specific guidance with visual cues
 - ✅ Standalone mode detection
 - ✅ Apple Touch Icon support
-- ✅ Custom instruction prompt
+- ✅ Custom instruction prompt with better styling
 
 ### Samsung Internet
 - ✅ PWA install support
@@ -54,21 +56,27 @@
 
 ## Testing PWA Installation
 
+### New Login-Triggered Behavior
+The PWA install prompt now appears **only when users click "Sign in"** - this provides better UX and context.
+
 ### On Desktop (Development)
 1. Open site in Chrome/Edge
-2. Wait 5 seconds for install prompt
-3. Click "Install" button
+2. Click "Sign in" button in header
+3. PWA install banner appears after 1 second
+4. Click "Install App" button
 
 ### On Android Chrome
 1. Open site on mobile
-2. Wait 5 seconds for banner
-3. Tap "Install" or use Chrome menu → "Install app"
+2. Tap "Sign in" button
+3. Beautiful gradient banner appears at bottom
+4. Tap "Install App" or use Chrome menu → "Install app"
 
 ### On iOS Safari  
 1. Open site in Safari
-2. Wait for instruction banner
-3. Tap Share button → "Add to Home Screen"
-4. Confirm installation
+2. Tap "Sign in" button
+3. Special iOS instruction banner appears
+4. Follow "Share → Add to Home Screen" instructions
+5. Confirm installation
 
 ## Permission Handling
 
@@ -87,12 +95,21 @@
 ### Core PWA Files
 - `public/manifest.json` - Updated with mobile-compatible settings
 - `src/app/layout.tsx` - Added iOS-specific meta tags
-- `src/components/PWAWrapper.tsx` - Enhanced mobile browser detection
+- `src/components/PWAWrapper.tsx` - Enhanced mobile browser detection + login-triggered prompts
+- `src/components/HomePage.tsx` - Added PWA prompt trigger on login click
 
 ### Icon Generation
 - `scripts/generate-mobile-icons.js` - Creates SVG source files  
 - `scripts/convert-with-sharp.js` - Converts SVG to PNG
 - Generated files: `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`, etc.
+
+### New Banner Design Features
+- **Gradient Background**: Eye-catching primary-to-accent gradient
+- **Enhanced Typography**: Better contrast and readability
+- **iOS-Specific Instructions**: Visual guidance with icons
+- **Improved Buttons**: Better touch targets and hover states
+- **Close Button**: Easy dismissal option in top-right corner
+- **Responsive Design**: Works perfectly on all screen sizes
 
 ## Vercel Deployment
 

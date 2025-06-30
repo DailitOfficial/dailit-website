@@ -19,7 +19,16 @@ const HomePage = () => {
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
-  const openLoginModal = () => setIsLoginModalOpen(true)
+  
+  const openLoginModal = () => {
+    setIsLoginModalOpen(true)
+    // Trigger PWA install prompt when user tries to login
+    setTimeout(() => {
+      const event = new CustomEvent('showPWAPrompt')
+      window.dispatchEvent(event)
+    }, 1000) // Short delay to show modal first
+  }
+  
   const closeLoginModal = () => setIsLoginModalOpen(false)
 
   return (

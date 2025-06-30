@@ -21,6 +21,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [loginAttempted, setLoginAttempted] = useState(false)
 
   useEffect(() => {
     // Check if app is already installed
@@ -46,26 +47,14 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
       setDeferredPrompt(e as BeforeInstallPromptEvent)
-      
-      // Show install prompt after a short delay if not already installed
-      if (!installed) {
-        setTimeout(() => {
-          setShowInstallPrompt(true)
-        }, 5000) // Increased delay for better UX
-      }
+      // Don't show prompt automatically anymore
     }
 
-    // Handle iOS Safari PWA detection and prompting
-    const handleiOSInstall = () => {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-      const isInStandaloneMode = (window.navigator as any).standalone
-      
-      if (isIOS && !isInStandaloneMode && !installed) {
-        // For iOS, we can't programmatically trigger install
-        // Show custom instruction prompt instead
-        setTimeout(() => {
-          setShowInstallPrompt(true)
-        }, 5000)
+    // Listen for login attempts to show PWA install prompt
+    const handleLoginAttempt = () => {
+      setLoginAttempted(true)
+      if (!installed) {
+        setShowInstallPrompt(true)
       }
     }
 
@@ -126,9 +115,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     window.addEventListener('loginStateChange', handleLoginStateChange as EventListener)
     window.addEventListener('storage', handleStorageChange)
     window.addEventListener('message', handleMessage)
-
-    // Check for iOS devices and handle accordingly
-    handleiOSInstall()
+    window.addEventListener('showPWAPrompt', handleLoginAttempt as EventListener)
 
     // Setup notification handling for already installed PWAs
     if (installed) {
@@ -141,6 +128,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       window.removeEventListener('loginStateChange', handleLoginStateChange as EventListener)
       window.removeEventListener('storage', handleStorageChange)
       window.removeEventListener('message', handleMessage)
+      window.removeEventListener('showPWAPrompt', handleLoginAttempt as EventListener)
     }
   }, [])
 
@@ -331,47 +319,64 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       
       {/* Install prompt banner */}
       {showInstallPrompt && !isInstalled && (
-        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-50">
-          <div className="flex items-start space-x-3">
+        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md bg-gradient-to-r from-primary to-accent rounded-xl shadow-2xl border border-white/20 p-5 z-50 backdrop-blur-sm">
+          <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-                <span className="text-white font-cal-sans font-medium text-sm">D</span>
+              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                <span className="text-primary font-cal-sans font-semibold text-lg">D</span>
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="text-sm font-medium text-gray-900">Install Dail it</h3>
-              <p className="text-xs text-gray-600 mt-1">
-                Get the full app experience with voice/video calls and push notifications from your portal.
+              <h3 className="text-sm font-semibold text-white mb-1">Install Dail it App</h3>
+              <p className="text-xs text-white/90 leading-relaxed">
+                Get the full experience with instant notifications, voice/video calls, and offline access to your portal.
               </p>
               {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
-                <div className="mt-3">
-                  <p className="text-xs text-gray-500 mb-2">
-                    To install on iOS: Tap <span className="font-medium">Share</span> → <span className="font-medium">Add to Home Screen</span>
-                  </p>
+                <div className="mt-4">
+                  <div className="bg-white/10 rounded-lg p-3 mb-3">
+                    <p className="text-xs text-white/90 mb-2">
+                      <span className="font-medium">For iOS:</span> Tap the <span className="font-semibold">Share</span> button → <span className="font-semibold">Add to Home Screen</span>
+                    </p>
+                    <div className="flex items-center text-xs text-white/80">
+                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                      </svg>
+                      This enables push notifications
+                    </div>
+                  </div>
                   <button
                     onClick={handleDismissInstall}
-                    className="text-xs text-gray-600 px-3 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
+                    className="w-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium px-4 py-2.5 rounded-lg transition-all duration-200"
                   >
-                    Got it
+                    Got it, thanks!
                   </button>
                 </div>
               ) : (
-                <div className="flex space-x-2 mt-3">
+                <div className="flex space-x-2 mt-4">
                   <button
                     onClick={handleInstallClick}
-                    className="text-xs bg-primary text-white px-3 py-1.5 rounded-md hover:bg-primary-800 transition-colors"
+                    className="flex-1 bg-white hover:bg-gray-50 text-primary text-xs font-semibold px-4 py-2.5 rounded-lg transition-all duration-200 shadow-sm"
                   >
-                    Install
+                    Install App
                   </button>
                   <button
                     onClick={handleDismissInstall}
-                    className="text-xs text-gray-600 px-3 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
+                    className="bg-white/20 hover:bg-white/30 text-white text-xs font-medium px-4 py-2.5 rounded-lg transition-all duration-200"
                   >
-                    Maybe later
+                    Later
                   </button>
                 </div>
               )}
             </div>
+            <button
+              onClick={handleDismissInstall}
+              className="text-white/60 hover:text-white transition-colors p-1"
+              aria-label="Close"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         </div>
       )}

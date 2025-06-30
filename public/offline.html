@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dail it. - Offline</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f9fafb;
+            color: #374151;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: #101828;
+            border-radius: 12px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: 500;
+            position: relative;
+        }
+        .logo::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #7c3aed;
+            border-radius: 50%;
+        }
+        h1 {
+            margin: 0 0 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        p {
+            margin: 0;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">D</div>
+        <h1>You're Offline</h1>
+        <p>Please check your internet connection and try again.</p>
+    </div>
+</body>
+</html> 

@@ -353,58 +353,36 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       
       {/* Install prompt banner */}
       {showInstallPrompt && !isInstalled && (
-        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md bg-gradient-to-r from-primary to-accent rounded-xl shadow-2xl border border-white/20 p-5 z-50 backdrop-blur-sm">
-          <div className="flex items-start space-x-4">
+        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50">
+          <div className="flex items-start space-x-3">
             <div className="flex-shrink-0">
-              <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                <span className="text-primary font-cal-sans font-semibold text-lg">D</span>
+              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                <span className="text-white font-semibold text-sm">D</span>
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-white mb-1">Install Dail it. App</h3>
-              <p className="text-xs text-white/90 leading-relaxed">
-                Get the full experience with instant notifications, voice/video calls, and offline access to your portal.
+              <h3 className="text-sm font-semibold text-gray-900 mb-1">Install Dail it. App</h3>
+              <p className="text-xs text-gray-600">
+                Get notifications and offline access.
               </p>
-              {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
-                <div className="mt-4">
-                  <div className="bg-white/10 rounded-lg p-3 mb-3">
-                    <p className="text-xs text-white/90 mb-2">
-                      <span className="font-medium">For iOS:</span> Tap the <span className="font-semibold">Share</span> button → <span className="font-semibold">Add to Home Screen</span>
-                    </p>
-                    <div className="flex items-center text-xs text-white/80">
-                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                      </svg>
-                      This enables push notifications
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleDismissInstall}
-                    className="w-full bg-white/20 hover:bg-white/30 text-white text-xs font-medium px-4 py-2.5 rounded-lg transition-all duration-200"
-                  >
-                    Got it, thanks!
-                  </button>
-                </div>
-              ) : (
-                <div className="flex space-x-2 mt-4">
-                  <button
-                    onClick={handleInstallClick}
-                    className="flex-1 bg-white hover:bg-gray-50 text-primary text-xs font-semibold px-4 py-2.5 rounded-lg transition-all duration-200 shadow-sm"
-                  >
-                    Install App
-                  </button>
-                  <button
-                    onClick={handleDismissInstall}
-                    className="bg-white/20 hover:bg-white/30 text-white text-xs font-medium px-4 py-2.5 rounded-lg transition-all duration-200"
-                  >
-                    Later
-                  </button>
-                </div>
-              )}
+              <div className="flex space-x-2 mt-3">
+                <button
+                  onClick={handleInstallClick}
+                  className="flex-1 bg-black hover:bg-gray-800 text-white text-xs font-medium px-3 py-2 rounded transition-colors"
+                >
+                  Install
+                </button>
+                <button
+                  onClick={handleDismissInstall}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium px-3 py-2 rounded transition-colors"
+                >
+                  Later
+                </button>
+              </div>
             </div>
             <button
               onClick={handleDismissInstall}
-              className="text-white/60 hover:text-white transition-colors p-1"
+              className="text-gray-400 hover:text-gray-600 transition-colors"
               aria-label="Close"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

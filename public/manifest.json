@@ -8,95 +8,33 @@
   "theme_color": "#101828",
   "orientation": "portrait-primary",
   "scope": "/",
-  "id": "dailit-pwa",
-  "launch_handler": {
-    "client_mode": "focus-existing"
-  },
-  "related_applications": [],
-  "prefer_related_applications": false,
-  "serviceworker": {
-    "src": "/sw.js",
-    "scope": "/",
-    "update_via_cache": "none"
-  },
-  "protocol_handlers": [
-    {
-      "protocol": "web+dailit",
-      "url": "/?notification=%s"
-    },
-    {
-      "protocol": "tel",
-      "url": "/?call=%s"
-    },
-    {
-      "protocol": "sip",
-      "url": "/?sip=%s"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Portal Login",
-      "short_name": "Portal",
-      "description": "Access your Dail it portal",
-      "url": "/?action=login",
-      "icons": [
-        {
-          "src": "/icon.svg",
-          "sizes": "any"
-        }
-      ]
-    },
-    {
-      "name": "Make Call",
-      "short_name": "Call",
-      "description": "Start a new call",
-      "url": "/?action=call",
-      "icons": [
-        {
-          "src": "/icon.svg",
-          "sizes": "any"
-        }
-      ]
-    }
-  ],
   "icons": [
     {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icon.png",
-      "sizes": "192x192 512x512",
+      "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshot-mobile.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Dail it mobile interface"
+      "purpose": "any"
     },
     {
-      "src": "/screenshot-desktop.png",
-      "sizes": "1280x720",
+      "src": "/icon.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "form_factor": "wide",
-      "label": "Dail it desktop interface"
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512", 
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "categories": ["business", "productivity", "communication"],
   "lang": "en-US",
-  "dir": "ltr",
-  "display_override": [
-    "standalone",
-    "minimal-ui"
-  ],
-  "edge_side_panel": {
-    "preferred_width": 400
-  }
+  "dir": "ltr"
 } 

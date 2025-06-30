@@ -22,6 +22,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
   const [isInstalled, setIsInstalled] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [loginAttempted, setLoginAttempted] = useState(false)
+  const [promptDismissed, setPromptDismissed] = useState(false)
 
   useEffect(() => {
     // Check if app is already installed
@@ -34,6 +35,10 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     const loginState = localStorage.getItem('dailit-login-state')
     const isUserLoggedIn = loginState === 'logged-in'
     setIsLoggedIn(isUserLoggedIn)
+
+    // Check if prompt was previously dismissed in this session
+    const wasPromptDismissed = localStorage.getItem('pwa-prompt-dismissed') === 'true'
+    setPromptDismissed(wasPromptDismissed)
 
     // If PWA is installed and user is logged in, redirect to portal
     if (installed && isUserLoggedIn && window.location.hostname !== 'portal.dailit.com') {
@@ -52,8 +57,24 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     // Listen for login attempts to show PWA install prompt
     const handleLoginAttempt = () => {
       setLoginAttempted(true)
-      if (!installed) {
+      
+      // Check current installation status in real-time
+      const currentlyStandalone = window.matchMedia('(display-mode: standalone)').matches
+      const currentlyInWebAppiOS = (window.navigator as any).standalone
+      const currentlyInstalled = currentlyStandalone || currentlyInWebAppiOS
+      
+      console.log('🔍 PWA: Login attempt - checking installation status:', {
+        standalone: currentlyStandalone,
+        iosWebApp: currentlyInWebAppiOS,
+        installed: currentlyInstalled,
+        isInstalledState: isInstalled
+      })
+      
+      if (!currentlyInstalled && !isInstalled && !promptDismissed) {
+        console.log('📱 PWA: Not installed, showing install prompt')
         setShowInstallPrompt(true)
+      } else {
+        console.log('✅ PWA: Already installed or prompt dismissed, skipping prompt')
       }
     }
 
@@ -62,6 +83,11 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       setShowInstallPrompt(false)
       setDeferredPrompt(null)
       setIsInstalled(true)
+      setPromptDismissed(false) // Reset dismissal flag on successful install
+      
+      // Clear dismissal from localStorage
+      localStorage.removeItem('pwa-prompt-dismissed')
+      console.log('🎉 PWA: App successfully installed!')
       
       // Request permissions ONLY after app is installed
       requestAllPermissionsAfterInstall()
@@ -293,11 +319,15 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       const choiceResult = await deferredPrompt.userChoice
       
       if (choiceResult.outcome === 'accepted') {
-        console.log('PWA: User accepted the install prompt')
+        console.log('✅ PWA: User accepted the install prompt')
         setShowInstallPrompt(false)
+        setPromptDismissed(false) // Reset since user accepted
+        localStorage.removeItem('pwa-prompt-dismissed')
         // Permissions will be requested automatically via handleAppInstalled
       } else {
-        console.log('PWA: User dismissed the install prompt')
+        console.log('❌ PWA: User dismissed the install prompt')
+        setPromptDismissed(true)
+        localStorage.setItem('pwa-prompt-dismissed', 'true')
       }
       
       setDeferredPrompt(null)
@@ -310,6 +340,11 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
   const handleDismissInstall = () => {
     setShowInstallPrompt(false)
     setDeferredPrompt(null)
+    setPromptDismissed(true)
+    
+    // Store dismissal in localStorage for this session
+    localStorage.setItem('pwa-prompt-dismissed', 'true')
+    console.log('❌ PWA: Install prompt dismissed by user')
   }
 
   return (

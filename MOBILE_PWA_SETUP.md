@@ -9,22 +9,32 @@
 **Fixes Applied**:
 
 #### Icon Compatibility
-- **Added PNG fallbacks**: Mobile browsers require PNG icons in addition to SVG
-- **Generated multiple sizes**: 192x192, 512x512 for regular icons
-- **Created maskable icons**: For better Android integration
-- **Added Apple Touch Icon**: 180x180 PNG for iOS Safari
+- **Using user's icon.png**: Single high-quality PNG file for all platforms
+- **SVG + PNG combination**: SVG for modern browsers, PNG for compatibility
+- **Maskable icon support**: Single icon serves both regular and maskable purposes
+- **Apple Touch Icon**: Uses the same icon.png for iOS Safari
 
 #### Manifest.json Updates
 - **Removed invalid permissions**: Web manifests don't support microphone/camera permissions
-- **Added proper icon array**: Multiple formats and sizes for broad compatibility
-- **Fixed display mode**: Ensured fullscreen mode works across browsers
+- **Simplified icon array**: Uses single PNG file for all sizes and purposes
+- **Fixed display mode**: Changed from fullscreen to standalone to preserve status bar
+- **Status bar visibility**: Now shows network, battery, and time indicators
 
 #### iOS Safari Specific Fixes
 - **Apple-specific meta tags**: Added apple-mobile-web-app-capable, apple-touch-icon
 - **Custom install instructions**: iOS doesn't support beforeinstallprompt, show manual instructions
 - **Standalone detection**: Improved detection for iOS PWA mode
 
-### 2. Deployment Warnings on Vercel
+### 2. Status Bar Hidden in PWA
+
+**Problem**: When PWA was installed, the status bar (with network, battery, time) was completely hidden.
+
+**Fixes Applied**:
+- **Changed display mode**: From "fullscreen" to "standalone" in manifest.json
+- **Updated status bar style**: Set to "black-translucent" for better visibility
+- **Preserved user experience**: Status bar now visible while maintaining app-like feel
+
+### 3. Deployment Warnings on Vercel
 
 **Problem**: Build warnings about deprecated packages and multiple service worker generation.
 
@@ -98,10 +108,11 @@ The PWA install prompt now appears **only when users click "Sign in"** - this pr
 - `src/components/PWAWrapper.tsx` - Enhanced mobile browser detection + login-triggered prompts
 - `src/components/HomePage.tsx` - Added PWA prompt trigger on login click
 
-### Icon Generation
-- `scripts/generate-mobile-icons.js` - Creates SVG source files  
-- `scripts/convert-with-sharp.js` - Converts SVG to PNG
-- Generated files: `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`, etc.
+### Icon Management
+- `public/icon.svg` - Modern browsers and vector displays
+- `public/icon.png` - User-provided icon for all PNG needs
+- `scripts/generate-mobile-icons.js` - Available for icon generation if needed
+- `scripts/convert-with-sharp.js` - Available for batch conversion if needed
 
 ### New Banner Design Features
 - **Gradient Background**: Eye-catching primary-to-accent gradient

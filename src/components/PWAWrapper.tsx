@@ -27,8 +27,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     // Check if app is already installed
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
     const isInWebAppiOS = (window.navigator as any).standalone
-    const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches
-    const installed = isStandalone || isInWebAppiOS || isFullscreen
+    const installed = isStandalone || isInWebAppiOS
     setIsInstalled(installed)
 
     // Check login state from localStorage

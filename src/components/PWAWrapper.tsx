@@ -26,7 +26,8 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     // Check if app is already installed
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
     const isInWebAppiOS = (window.navigator as any).standalone
-    const installed = isStandalone || isInWebAppiOS
+    const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches
+    const installed = isStandalone || isInWebAppiOS || isFullscreen
     setIsInstalled(installed)
 
     // Check login state from localStorage
@@ -50,7 +51,21 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       if (!installed) {
         setTimeout(() => {
           setShowInstallPrompt(true)
-        }, 3000)
+        }, 5000) // Increased delay for better UX
+      }
+    }
+
+    // Handle iOS Safari PWA detection and prompting
+    const handleiOSInstall = () => {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+      const isInStandaloneMode = (window.navigator as any).standalone
+      
+      if (isIOS && !isInStandaloneMode && !installed) {
+        // For iOS, we can't programmatically trigger install
+        // Show custom instruction prompt instead
+        setTimeout(() => {
+          setShowInstallPrompt(true)
+        }, 5000)
       }
     }
 
@@ -111,6 +126,9 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     window.addEventListener('loginStateChange', handleLoginStateChange as EventListener)
     window.addEventListener('storage', handleStorageChange)
     window.addEventListener('message', handleMessage)
+
+    // Check for iOS devices and handle accordingly
+    handleiOSInstall()
 
     // Setup notification handling for already installed PWAs
     if (installed) {
@@ -276,7 +294,12 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
   }
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return
+    if (!deferredPrompt) {
+      // Fallback for browsers that don't support beforeinstallprompt
+      console.log('PWA: beforeinstallprompt not available, showing instructions')
+      setShowInstallPrompt(false)
+      return
+    }
 
     try {
       await deferredPrompt.prompt()
@@ -293,6 +316,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       setDeferredPrompt(null)
     } catch (error) {
       console.error('PWA: Error during installation:', error)
+      setShowInstallPrompt(false)
     }
   }
 
@@ -306,7 +330,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       {children}
       
       {/* Install prompt banner */}
-      {showInstallPrompt && deferredPrompt && !isInstalled && (
+      {showInstallPrompt && !isInstalled && (
         <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-50">
           <div className="flex items-start space-x-3">
             <div className="flex-shrink-0">
@@ -319,20 +343,34 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
               <p className="text-xs text-gray-600 mt-1">
                 Get the full app experience with voice/video calls and push notifications from your portal.
               </p>
-              <div className="flex space-x-2 mt-3">
-                <button
-                  onClick={handleInstallClick}
-                  className="text-xs bg-primary text-white px-3 py-1.5 rounded-md hover:bg-primary-800 transition-colors"
-                >
-                  Install
-                </button>
-                <button
-                  onClick={handleDismissInstall}
-                  className="text-xs text-gray-600 px-3 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
-                >
-                  Maybe later
-                </button>
-              </div>
+              {/iPad|iPhone|iPod/.test(navigator.userAgent) ? (
+                <div className="mt-3">
+                  <p className="text-xs text-gray-500 mb-2">
+                    To install on iOS: Tap <span className="font-medium">Share</span> → <span className="font-medium">Add to Home Screen</span>
+                  </p>
+                  <button
+                    onClick={handleDismissInstall}
+                    className="text-xs text-gray-600 px-3 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
+                  >
+                    Got it
+                  </button>
+                </div>
+              ) : (
+                <div className="flex space-x-2 mt-3">
+                  <button
+                    onClick={handleInstallClick}
+                    className="text-xs bg-primary text-white px-3 py-1.5 rounded-md hover:bg-primary-800 transition-colors"
+                  >
+                    Install
+                  </button>
+                  <button
+                    onClick={handleDismissInstall}
+                    className="text-xs text-gray-600 px-3 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
+                  >
+                    Maybe later
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -421,7 +421,7 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
             Admin Login
           </h1>
           <p className="text-gray-600 text-sm sm:text-base">
-            Sign in to access the Dail it admin dashboard
+            Sign in to access the Dail it. admin dashboard
           </p>
         </div>
 

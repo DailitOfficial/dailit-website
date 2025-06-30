@@ -213,7 +213,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
           
           // Handle WLC notification data for calls, messages, and video
           if (event.data?.type === 'notification' && event.data?.payload) {
-            new Notification(event.data.payload.title || 'Dail it Notification', {
+            new Notification(event.data.payload.title || 'Dail it. Notification', {
               body: event.data.payload.body,
               icon: '/icon.svg',
               badge: '/icon.svg',
@@ -326,7 +326,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-white mb-1">Install Dail it App</h3>
+              <h3 className="text-sm font-semibold text-white mb-1">Install Dail it. App</h3>
               <p className="text-xs text-white/90 leading-relaxed">
                 Get the full experience with instant notifications, voice/video calls, and offline access to your portal.
               </p>

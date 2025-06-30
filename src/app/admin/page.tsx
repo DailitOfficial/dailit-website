@@ -195,7 +195,7 @@ export default function AdminPage() {
                   </div>
                   <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-accent rounded-full" />
                 </div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dail it Admin</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dail it. Admin</h1>
               </div>
               <p className="text-gray-600 text-sm sm:text-base">Lead Management Dashboard</p>
               {adminUser && (

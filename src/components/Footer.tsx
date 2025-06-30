@@ -17,7 +17,7 @@ const Footer = () => {
                 <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-accent rounded-full" />
               </div>
               <span className="font-cal-sans font-normal text-lg text-gray-900">
-                Dail it
+                Dail it.
               </span>
             </div>
             <p className="text-gray-600 max-w-sm text-sm leading-relaxed">

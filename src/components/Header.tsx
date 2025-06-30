@@ -42,7 +42,7 @@ const Header = ({ onRequestAccess, onLoginClick }: HeaderProps) => {
                 <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-accent rounded-full" />
               </div>
               <span className="font-cal-sans font-medium text-lg text-gray-900 group-hover:text-primary transition-colors">
-                Dail it
+                Dail it.
               </span>
             </Link>
           </div>

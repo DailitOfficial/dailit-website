@@ -124,7 +124,7 @@ export default function AdminDashboard() {
                 <span className="text-white font-cal-sans font-medium">D</span>
               </div>
               <h1 className="text-xl font-cal-sans font-medium text-gray-900">
-                Dail it Admin Dashboard
+                Dail it. Admin Dashboard
               </h1>
             </div>
             <div className="flex items-center space-x-4">

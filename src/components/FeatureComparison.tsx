@@ -190,6 +190,7 @@ const rotatingFeatures = [
 
 export function FeatureComparison() {
   const [currentFeature, setCurrentFeature] = useState(0)
+  const [showComparison, setShowComparison] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -320,15 +321,52 @@ export function FeatureComparison() {
           </div>
         </motion.div>
 
-        {/* Comparison Table */}
+        {/* Comparison Table Toggle */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mb-8 sm:mb-12"
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-8 sm:mb-12 text-center"
         >
+          {!showComparison ? (
+            <div className="text-center">
+              <Button
+                variant="primary"
+                size="md"
+                onClick={() => setShowComparison(true)}
+                className="bg-primary hover:bg-primary-800 text-white border-0 font-normal px-6 py-3 text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                <span className="flex items-center gap-2">
+                  View Feature Comparison
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </span>
+              </Button>
+            </div>
+          ) : (
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-200/30 overflow-hidden shadow-lg">
+              {/* Collapse Button */}
+              <div className="bg-gradient-to-r from-gray-50/80 to-gray-50/50 p-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 className="font-cal-sans font-normal text-gray-900 text-lg sm:text-xl">
+                  Feature Comparison
+                </h3>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowComparison(false)}
+                  className="text-gray-600 hover:text-gray-900 border-gray-300 hover:border-gray-400"
+                >
+                  <span className="flex items-center gap-2">
+                    Hide Comparison
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                    </svg>
+                  </span>
+                </Button>
+              </div>
+
             {/* Desktop Table */}
             <div className="hidden lg:block overflow-x-auto">
               <table className="w-full">
@@ -404,6 +442,7 @@ export function FeatureComparison() {
               ))}
             </div>
           </div>
+          )}
         </motion.div>
 
         {/* Stats Section */}
@@ -414,26 +453,34 @@ export function FeatureComparison() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center"
         >
-          <div className="bg-gradient-to-br from-primary-50/50 to-accent-50/30 backdrop-blur-sm rounded-2xl border border-gray-200/30 p-6 sm:p-8 max-w-4xl mx-auto">
-            <h3 className="font-cal-sans font-normal text-gray-900 text-xl sm:text-2xl lg:text-3xl mb-4">
+          <div className="bg-gradient-to-br from-primary-50/50 to-accent-50/30 backdrop-blur-sm rounded-2xl border border-gray-200/30 p-6 sm:p-8 max-w-6xl mx-auto">
+            <h3 className="font-cal-sans font-normal text-gray-900 text-xl sm:text-2xl lg:text-3xl mb-6">
               Why Leading Businesses Choose Dail it
             </h3>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6">
-              {[
-                { value: "50%", label: "Cost Savings vs Competitors" },
-                { value: "99.9%", label: "Uptime Guarantee" },
-                { value: "24/7", label: "Support Included" },
-                { value: "FREE", label: "API Access" }
-              ].map((stat, index) => (
-                <div key={index} className="text-center px-2">
-                  <div className="font-cal-sans font-normal text-xl sm:text-2xl lg:text-3xl text-primary mb-1">
-                    {stat.value}
+            
+            {/* Single Line Layout - Mobile & Desktop */}
+            <div className="overflow-x-auto pb-4">
+              <div className="flex gap-3 min-w-max px-2 justify-center">
+                {[
+                  { value: "70%", label: "Profit Margins" },
+                  { value: "99.999%", label: "Uptime SLA" },
+                  { value: "24/7/365", label: "US Support" },
+                  { value: "FREE", label: "White Label" },
+                  { value: "100+", label: "Integrations" },
+                  { value: "UNLIMITED", label: "API Access" },
+                  { value: "SOC 2", label: "Compliant" },
+                  { value: "INSTANT", label: "Provisioning" }
+                ].map((stat, index) => (
+                  <div key={index} className="text-center px-3 py-3 bg-white/60 rounded-xl min-w-[110px] flex-shrink-0">
+                    <div className="font-cal-sans font-normal text-base sm:text-lg lg:text-xl text-primary">
+                      {stat.value}
+                    </div>
+                    <div className="text-xs font-medium text-gray-800 whitespace-nowrap">
+                      {stat.label}
+                    </div>
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-600 leading-tight">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
           </div>

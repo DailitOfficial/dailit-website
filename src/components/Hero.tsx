@@ -35,7 +35,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
     <section className="relative overflow-hidden bg-white">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-25 via-white to-white" />
       
-      <div className="relative w-full px-4 sm:px-6 lg:px-8 pt-8 pb-20 sm:pt-12 sm:pb-24 lg:pt-16 lg:pb-28">
+      <div className="relative w-full px-4 sm:px-6 lg:px-8 pt-8 pb-0">
         <div className="text-center">
           {/* Announcement Badge */}
           <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-normal bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-200 mb-6 sm:mb-8">
@@ -71,7 +71,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
           </div>
 
           {/* Subheadline */}
-          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-3xl sm:max-w-4xl mx-auto leading-relaxed sm:leading-relaxed lg:leading-relaxed font-normal mb-4 sm:mb-6 px-2 sm:px-0">
+          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-3xl sm:max-w-4xl mx-auto leading-relaxed sm:leading-relaxed lg:leading-relaxed font-normal mb-6 sm:mb-8 px-2 sm:px-0">
             A modern VoIP solution built for the way today's teams communicate — smooth conversations, fast connections, and{' '}
             <span className="font-normal text-gray-900">flexible virtual numbers</span>, all in a{' '}
             <span className="font-normal text-gray-900">unified workspace</span>{' '}
@@ -210,12 +210,12 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
           </div>
 
           {/* CTA Section */}
-          <div className="max-w-md mx-auto px-4 sm:px-0 mt-8 sm:mt-10 lg:mt-12">
+          <div className="max-w-md mx-auto px-4 sm:px-0 mt-8 sm:mt-10 lg:mt-12 mb-4 sm:mb-6">
             <div className="flex justify-center">
               <Button 
                 variant="primary"
                 size="md"
-                className="bg-primary hover:bg-primary-800 text-white border-0 font-normal w-full sm:w-auto px-8 py-3 text-sm sm:text-base"
+                className="bg-primary hover:bg-primary-800 text-white border-0 font-normal w-full sm:w-auto px-8 py-4 text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-200"
                 onClick={onRequestAccess}
               >
                 Request Access
@@ -224,27 +224,29 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
           </div>
         </div>
 
-        {/* Trust Indicators - Bottom of Hero */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-gray-200/30 py-4">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-8 text-xs text-gray-600">
-              <div className="flex items-center gap-1.5">
-                <svg className="w-3 h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span className="whitespace-nowrap">SOC 2 Compliant</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <svg className="w-3 h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span className="whitespace-nowrap">99.9% Uptime SLA</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <svg className="w-3 h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span className="whitespace-nowrap">24/7 Enterprise Support</span>
+        {/* Trust Indicators - Static positioned at bottom with proper spacing */}
+        <div className="relative mt-4 sm:mt-6 lg:mt-8">
+          <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/30 py-3 sm:py-4 rounded-t-xl">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <svg className="w-3 h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="whitespace-nowrap font-medium">SOC 2 Compliant</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-3 h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="whitespace-nowrap font-medium">99.9% Uptime SLA</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-3 h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="whitespace-nowrap font-medium">24/7 Enterprise Support</span>
+                </div>
               </div>
             </div>
           </div>

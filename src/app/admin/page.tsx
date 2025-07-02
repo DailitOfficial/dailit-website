@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import AdminLogin from '@/components/AdminLogin'
 import AdminDashboard from '@/components/AdminDashboard'
 import type { User } from '@supabase/supabase-js'
-import type { AdminUser } from '@/types'
+import type { AdminUser } from '@/lib/supabase'
 
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null)
@@ -24,7 +24,7 @@ export default function AdminPage() {
   }, [])
 
   // Check authentication status
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = useCallback(async () => {
     if (isProcessingAuth) {
       console.log('Already processing auth, skipping...')
       return
@@ -47,7 +47,7 @@ export default function AdminPage() {
       if (!session?.user) {
         console.log('No authenticated user found')
         setUser(null)
-        setAdminUser(null)
+          setAdminUser(null)
         return
       }
 
@@ -100,7 +100,7 @@ export default function AdminPage() {
       setIsProcessingAuth(false)
       setAuthLoading(false)
     }
-  }
+  }, [isProcessingAuth])
 
   // Listen for auth changes
   useEffect(() => {
@@ -120,13 +120,13 @@ export default function AdminPage() {
         setUser(null)
         setAdminUser(null)
         setAuthLoading(false)
-      }
+    }
     })
 
     return () => {
       subscription.unsubscribe()
     }
-  }, [])
+  }, [checkAuthStatus])
 
   // Handle login success
   const handleLoginSuccess = () => {
@@ -152,11 +152,11 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="text-center">
+        <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff6b35] mx-auto"></div>
             <p className="mt-4 text-sm text-gray-600">
               {isProcessingAuth ? 'Checking authentication...' : 'Loading...'}
-            </p>
+          </p>
           </div>
         </div>
       </div>
@@ -168,8 +168,6 @@ export default function AdminPage() {
     return (
       <AdminLogin 
         onLoginSuccess={handleLoginSuccess}
-        currentUser={user}
-        isAdmin={!!adminUser}
       />
     )
   }

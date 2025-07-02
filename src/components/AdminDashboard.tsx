@@ -1,45 +1,21 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getAdminPasswordHistory, getAdminUsersSummary, signOut, getCurrentAdminUser } from '../lib/supabase'
+import { getLeads, getContactSubmissions, updateLeadStatus, updateContactStatus } from '../lib/supabase'
+import type { AdminUser, Lead, ContactSubmission } from '../lib/supabase'
 
-interface PasswordActivity {
-  id: string
-  email: string
-  full_name: string
-  change_type: 'reset' | 'manual_update' | 'initial_setup'
-  changed_by: string
-  created_at: string
-  ip_address: string
-  notes: string
-  password_change_count: number
-  password_last_changed: string
-  password_never_changed: boolean
+interface AdminDashboardProps {
+  adminUser: AdminUser
+  onLogout: () => void
 }
 
-interface AdminUserSummary {
-  id: string
-  email: string
-  full_name: string
-  role: string
-  is_active: boolean
-  last_login: string
-  created_at: string
-  password_reset_count: number
-  last_password_reset: string
-  password_change_count: number
-  password_last_changed: string
-  password_never_changed: boolean
-  password_status: string
-}
-
-export default function AdminDashboard() {
-  const [currentUser, setCurrentUser] = useState<any>(null)
-  const [passwordHistory, setPasswordHistory] = useState<PasswordActivity[]>([])
-  const [adminUsers, setAdminUsers] = useState<AdminUserSummary[]>([])
+export default function AdminDashboard({ adminUser, onLogout }: AdminDashboardProps) {
+  const [leads, setLeads] = useState<Lead[]>([])
+  const [contacts, setContacts] = useState<ContactSubmission[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'users'>('overview')
+  const [activeTab, setActiveTab] = useState<'leads' | 'contacts' | 'overview'>('overview')
+  const [updatingId, setUpdatingId] = useState<string | null>(null)
 
   useEffect(() => {
     loadDashboardData()
@@ -50,17 +26,17 @@ export default function AdminDashboard() {
       setLoading(true)
       setError(null)
 
-      // Get current user
-      const user = await getCurrentAdminUser()
-      setCurrentUser(user)
+      console.log('Loading dashboard data...')
 
-      // Load password history
-      const history = await getAdminPasswordHistory()
-      setPasswordHistory(history || [])
+      // Load leads
+      const leadsData = await getLeads()
+      console.log('Leads loaded:', leadsData.length)
+      setLeads(leadsData)
 
-      // Load admin users summary
-      const users = await getAdminUsersSummary()
-      setAdminUsers(users || [])
+      // Load contact submissions
+      const contactsData = await getContactSubmissions()
+      console.log('Contacts loaded:', contactsData.length)
+      setContacts(contactsData)
 
     } catch (err: any) {
       console.error('Error loading dashboard data:', err)
@@ -70,12 +46,41 @@ export default function AdminDashboard() {
     }
   }
 
-  const handleSignOut = async () => {
+  const handleLeadStatusUpdate = async (leadId: string, newStatus: Lead['status'], notes?: string) => {
     try {
-      await signOut()
-      window.location.reload()
-    } catch (err) {
-      console.error('Error signing out:', err)
+      setUpdatingId(leadId)
+      await updateLeadStatus(leadId, newStatus, notes)
+      
+      // Update local state
+      setLeads(prev => prev.map(lead => 
+        lead.id === leadId 
+          ? { ...lead, status: newStatus, notes: notes || lead.notes }
+          : lead
+      ))
+    } catch (err: any) {
+      console.error('Error updating lead status:', err)
+      setError(err.message || 'Failed to update lead status')
+    } finally {
+      setUpdatingId(null)
+    }
+  }
+
+  const handleContactStatusUpdate = async (contactId: string, newStatus: ContactSubmission['status']) => {
+    try {
+      setUpdatingId(contactId)
+      await updateContactStatus(contactId, newStatus)
+      
+      // Update local state
+      setContacts(prev => prev.map(contact => 
+        contact.id === contactId 
+          ? { ...contact, status: newStatus }
+          : contact
+      ))
+    } catch (err: any) {
+      console.error('Error updating contact status:', err)
+      setError(err.message || 'Failed to update contact status')
+    } finally {
+      setUpdatingId(null)
     }
   }
 
@@ -83,21 +88,15 @@ export default function AdminDashboard() {
     return new Date(dateString).toLocaleString()
   }
 
-  const getChangeTypeColor = (type: string) => {
-    switch (type) {
-      case 'reset': return 'bg-yellow-100 text-yellow-800'
-      case 'manual_update': return 'bg-blue-100 text-blue-800'
-      case 'initial_setup': return 'bg-green-100 text-green-800'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
-
-  const getPasswordStatusColor = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Never changed': return 'bg-red-100 text-red-800'
-      case 'Recently changed': return 'bg-green-100 text-green-800'
-      case 'Changed within 3 months': return 'bg-yellow-100 text-yellow-800'
-      case 'Needs update': return 'bg-red-100 text-red-800'
+      case 'new': return 'bg-blue-100 text-blue-800'
+      case 'contacted': return 'bg-yellow-100 text-yellow-800'
+      case 'qualified': return 'bg-purple-100 text-purple-800'
+      case 'converted': return 'bg-green-100 text-green-800'
+      case 'lost': return 'bg-red-100 text-red-800'
+      case 'responded': return 'bg-green-100 text-green-800'
+      case 'closed': return 'bg-gray-100 text-gray-800'
       default: return 'bg-gray-100 text-gray-800'
     }
   }
@@ -124,15 +123,15 @@ export default function AdminDashboard() {
                 <span className="text-white font-cal-sans font-medium">D</span>
               </div>
               <h1 className="text-xl font-cal-sans font-medium text-gray-900">
-                Dail it. Admin Dashboard
+                Dail it Admin Dashboard
               </h1>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">
-                Welcome, {currentUser?.full_name || currentUser?.email}
+                Welcome, {adminUser.full_name}
               </span>
               <button
-                onClick={handleSignOut}
+                onClick={onLogout}
                 className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 Sign Out
@@ -157,24 +156,24 @@ export default function AdminDashboard() {
               Overview
             </button>
             <button
-              onClick={() => setActiveTab('history')}
+              onClick={() => setActiveTab('leads')}
               className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'history'
+                activeTab === 'leads'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Password History
+              Leads ({leads.length})
             </button>
             <button
-              onClick={() => setActiveTab('users')}
+              onClick={() => setActiveTab('contacts')}
               className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'users'
+                activeTab === 'contacts'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Admin Users
+              Contacts ({contacts.length})
             </button>
           </nav>
         </div>
@@ -182,164 +181,220 @@ export default function AdminDashboard() {
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <p className="text-red-700">{error}</p>
+            <button
+              onClick={() => setError(null)}
+              className="text-red-700 underline text-sm mt-2"
+            >
+              Dismiss
+            </button>
           </div>
         )}
 
         {/* Overview Tab */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Total Admin Users</h3>
-                <p className="text-3xl font-bold text-blue-600">{adminUsers.length}</p>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Total Leads</h3>
+                <p className="text-3xl font-bold text-blue-600">{leads.length}</p>
               </div>
               <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Password Changes</h3>
-                <p className="text-3xl font-bold text-green-600">{passwordHistory.length}</p>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">New Leads</h3>
+                <p className="text-3xl font-bold text-green-600">
+                  {leads.filter(lead => lead.status === 'new').length}
+                </p>
               </div>
               <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Active Users</h3>
-                <p className="text-3xl font-bold text-purple-600">
-                  {adminUsers.filter(user => user.is_active).length}
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Total Contacts</h3>
+                <p className="text-3xl font-bold text-purple-600">{contacts.length}</p>
+              </div>
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-2">New Contacts</h3>
+                <p className="text-3xl font-bold text-orange-600">
+                  {contacts.filter(contact => contact.status === 'new').length}
                 </p>
               </div>
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Recent Password Activity</h3>
-              </div>
-              <div className="p-6">
-                {passwordHistory.slice(0, 5).map((activity) => (
-                  <div key={activity.id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                    <div>
-                      <p className="font-medium text-gray-900">{activity.full_name}</p>
-                      <p className="text-sm text-gray-600">{activity.email}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getChangeTypeColor(activity.change_type)}`}>
-                        {activity.change_type.replace('_', ' ')}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow">
+                <div className="p-6 border-b border-gray-200">
+                  <h3 className="text-lg font-medium text-gray-900">Recent Leads</h3>
+                </div>
+                <div className="p-6">
+                  {leads.slice(0, 5).map((lead) => (
+                    <div key={lead.id} className="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                      <div>
+                        <p className="font-medium text-gray-900">{lead.full_name}</p>
+                        <p className="text-sm text-gray-600">{lead.business_name}</p>
+                      </div>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(lead.status)}`}>
+                        {lead.status}
                       </span>
-                      <p className="text-sm text-gray-500 mt-1">{formatDate(activity.created_at)}</p>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                  {leads.length === 0 && (
+                    <p className="text-gray-500 text-center">No leads yet</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow">
+                <div className="p-6 border-b border-gray-200">
+                  <h3 className="text-lg font-medium text-gray-900">Recent Contacts</h3>
+                </div>
+                <div className="p-6">
+                  {contacts.slice(0, 5).map((contact) => (
+                    <div key={contact.id} className="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                      <div>
+                        <p className="font-medium text-gray-900">{contact.name}</p>
+                        <p className="text-sm text-gray-600">{contact.email}</p>
+                      </div>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(contact.status)}`}>
+                        {contact.status}
+                      </span>
+                    </div>
+                  ))}
+                  {contacts.length === 0 && (
+                    <p className="text-gray-500 text-center">No contacts yet</p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Password History Tab */}
-        {activeTab === 'history' && (
+        {/* Leads Tab */}
+        {activeTab === 'leads' && (
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">Password Change History</h3>
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900">Leads Management</h3>
+              <p className="text-sm text-gray-600">Manage leads from the Request Access form</p>
             </div>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      User
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Change Type
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Notes
-                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Business</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Industry</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Users</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {passwordHistory.map((activity) => (
-                    <tr key={activity.id}>
+                  {leads.map((lead) => (
+                    <tr key={lead.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{activity.full_name}</div>
-                          <div className="text-sm text-gray-500">{activity.email}</div>
+                          <div className="text-sm font-medium text-gray-900">{lead.business_name}</div>
+                          <div className="text-sm text-gray-500">{lead.email}</div>
                         </div>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{lead.full_name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">{lead.industry}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{lead.number_of_users}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getChangeTypeColor(activity.change_type)}`}>
-                          {activity.change_type.replace('_', ' ')}
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(lead.status)}`}>
+                          {lead.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {formatDate(activity.created_at)}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatDate(lead.created_at)}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {activity.notes}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <select
+                          value={lead.status}
+                          onChange={(e) => handleLeadStatusUpdate(lead.id, e.target.value as Lead['status'])}
+                          disabled={updatingId === lead.id}
+                          className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="new">New</option>
+                          <option value="contacted">Contacted</option>
+                          <option value="qualified">Qualified</option>
+                          <option value="converted">Converted</option>
+                          <option value="lost">Lost</option>
+                        </select>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              {leads.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-gray-500">No leads found. Leads will appear here when users submit the Request Access form.</p>
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {/* Admin Users Tab */}
-        {activeTab === 'users' && (
+        {/* Contacts Tab */}
+        {activeTab === 'contacts' && (
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">Admin Users</h3>
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900">Contact Submissions</h3>
+              <p className="text-sm text-gray-600">Manage contact form submissions</p>
             </div>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      User
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Role
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Password Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Last Login
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Reset Count
-                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {adminUsers.map((user) => (
-                    <tr key={user.id}>
+                  {contacts.map((contact) => (
+                    <tr key={contact.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{user.full_name}</div>
-                          <div className="text-sm text-gray-500">{user.email}</div>
+                          <div className="text-sm font-medium text-gray-900">{contact.name}</div>
+                          <div className="text-sm text-gray-500">{contact.email}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{contact.company || 'N/A'}</td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900 max-w-xs truncate" title={contact.message}>
+                          {contact.message}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                          user.role === 'super_admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
-                        }`}>
-                          {user.role.replace('_', ' ')}
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(contact.status)}`}>
+                          {contact.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPasswordStatusColor(user.password_status)}`}>
-                          {user.password_status}
-                        </span>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatDate(contact.created_at)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {user.last_login ? formatDate(user.last_login) : 'Never'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {user.password_reset_count || 0}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <select
+                          value={contact.status}
+                          onChange={(e) => handleContactStatusUpdate(contact.id, e.target.value as ContactSubmission['status'])}
+                          disabled={updatingId === contact.id}
+                          className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="new">New</option>
+                          <option value="responded">Responded</option>
+                          <option value="closed">Closed</option>
+                        </select>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              {contacts.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-gray-500">No contact submissions found. Submissions will appear here when users submit the contact form.</p>
+                </div>
+              )}
             </div>
           </div>
         )}

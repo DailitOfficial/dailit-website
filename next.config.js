@@ -40,5 +40,5 @@ const nextConfig = {
     return config
   }
 }
-
+ 
 module.exports = withPWA(nextConfig) 

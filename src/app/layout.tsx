@@ -105,7 +105,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <PWAWrapper>
-          {children}
+        {children}
         </PWAWrapper>
       </body>
     </html>

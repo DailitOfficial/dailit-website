@@ -171,6 +171,22 @@ export const updateLeadStatus = async (leadId: string, status: Lead['status'], n
   return data
 }
 
+export const updateContactStatus = async (contactId: string, status: ContactSubmission['status']) => {
+  const { data, error } = await supabase
+    .from('contact_submissions')
+    .update({ status })
+    .eq('id', contactId)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error updating contact status:', error)
+    throw error
+  }
+
+  return data
+}
+
 // Admin user interface
 export interface AdminUser {
   id: string
@@ -208,6 +224,18 @@ export const signOut = async () => {
 }
 
 export const getCurrentUser = async () => {
+  // First check if session exists to avoid AuthSessionMissingError
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+  
+  if (sessionError) {
+    console.error('Error getting session:', sessionError)
+    throw sessionError
+  }
+  
+  if (!session) {
+    return null
+  }
+
   const { data: { user }, error } = await supabase.auth.getUser()
 
   if (error) {
@@ -222,19 +250,43 @@ export const getCurrentAdminUser = async () => {
   const user = await getCurrentUser()
   if (!user) return null
 
-  const { data, error } = await supabase
-    .from('admin_users')
-    .select('*')
-    .eq('email', user.email)
-    .eq('is_active', true)
-    .single()
+  console.log('Looking up admin user for:', user.email)
 
-  if (error) {
-    console.error('Error getting admin user:', error)
+  try {
+    const { data, error } = await supabase
+      .from('admin_users')
+      .select('*')
+      .eq('email', user.email)
+      .eq('is_active', true)
+      .maybeSingle()
+
+    if (error) {
+      console.error('Error getting admin user:', error)
+      console.error('Error details:', JSON.stringify(error, null, 2))
+      
+      // Check if it's a table not found error
+      if (error.message?.includes('relation "admin_users" does not exist')) {
+        console.error('admin_users table does not exist')
+        return null
+      }
+      
+      // Check if it's a permission/RLS error
+      if (error.message?.includes('permission denied') || error.message?.includes('RLS')) {
+        console.error('RLS policy blocking access to admin_users table')
+        return null
+      }
+      
+      // For empty error objects or other issues, return null
+      console.error('Unknown database error, returning null')
+      return null
+    }
+
+    console.log('Admin user lookup result:', !!data, data?.email)
+    return data as AdminUser
+  } catch (err) {
+    console.error('Exception in getCurrentAdminUser:', err)
     return null
   }
-
-  return data as AdminUser
 }
 
 export const updateLastLogin = async (email: string) => {
@@ -325,8 +377,7 @@ export const resetPasswordForAdmin = async (email: string) => {
 
     // If admin user exists and is active, send reset email
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/admin`
-    })
+      redirectTo: `${window.location.origin}/admin`    })
 
     if (error) {
       console.error('Error sending reset email:', error)

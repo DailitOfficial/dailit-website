@@ -32,7 +32,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
   }, [taglines.length])
 
   return (
-    <section className="relative overflow-hidden bg-white">
+    <section className="relative overflow-hidden bg-white min-h-[calc(100vh-4rem)] flex flex-col justify-center">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-25 via-white to-white" />
       
       <div className="relative w-full px-4 sm:px-6 lg:px-8 pt-8 pb-0">

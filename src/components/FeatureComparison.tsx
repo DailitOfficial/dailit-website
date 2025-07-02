@@ -461,7 +461,7 @@ export function FeatureComparison() {
             {/* Single Line Layout - Mobile & Desktop */}
             <div className="overflow-x-auto pb-4">
               <div className="flex gap-3 min-w-max px-2 justify-center">
-                {[
+              {[
                   { value: "70%", label: "Profit Margins" },
                   { value: "99.999%", label: "Uptime SLA" },
                   { value: "24/7/365", label: "US Support" },
@@ -469,16 +469,16 @@ export function FeatureComparison() {
                   { value: "UNLIMITED", label: "API Access" },
                   { value: "SOC 2", label: "Compliant" },
                   { value: "INSTANT", label: "Provisioning" }
-                ].map((stat, index) => (
+              ].map((stat, index) => (
                   <div key={index} className="text-center px-3 py-3 bg-white/60 rounded-xl min-w-[110px] flex-shrink-0">
                     <div className="font-cal-sans font-normal text-base sm:text-lg lg:text-xl text-primary">
-                      {stat.value}
-                    </div>
-                    <div className="text-xs font-medium text-gray-800 whitespace-nowrap">
-                      {stat.label}
-                    </div>
+                    {stat.value}
                   </div>
-                ))}
+                    <div className="text-xs font-medium text-gray-800 whitespace-nowrap">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
               </div>
             </div>
 

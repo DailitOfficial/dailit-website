@@ -32,13 +32,13 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
   }, [taglines.length])
 
   return (
-    <section className="relative overflow-hidden bg-white min-h-[calc(100vh-4rem)] flex flex-col justify-center">
+    <section className="relative overflow-hidden bg-white hero-full-height hero-mobile-full flex flex-col justify-center">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-25 via-white to-white" />
       
-      <div className="relative w-full px-4 sm:px-6 lg:px-8 pt-8 pb-0">
+      <div className="relative w-full px-4 sm:px-6 lg:px-8 pt-16 md:pt-8 pb-4 flex-1 flex flex-col justify-center">
         <div className="text-center">
           {/* Announcement Badge */}
-          <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-normal bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-200 mb-6 sm:mb-8">
+          <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-normal bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-200 mb-4 sm:mb-6 md:mb-8">
             <span className="relative flex h-1.5 w-1.5 mr-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-500"></span>
@@ -48,9 +48,9 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
           </div>
 
           {/* Animated Headline */}
-          <div className="font-cal-sans font-normal tracking-tight text-gray-900 text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3 sm:mb-4 max-w-4xl mx-auto">
+          <div className="font-cal-sans font-normal tracking-tight text-gray-900 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-2 sm:mb-3 md:mb-4 max-w-4xl mx-auto">
             <div className="mb-1 sm:mb-2">Business Communications</div>
-            <div className="relative h-12 sm:h-16 md:h-20 lg:h-24 overflow-hidden">
+            <div className="relative h-8 sm:h-10 md:h-12 lg:h-16 xl:h-20 overflow-hidden">
               {taglines.map((tagline, index) => (
                 <div
                   key={index}
@@ -71,7 +71,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
           </div>
 
           {/* Subheadline */}
-          <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-3xl sm:max-w-4xl mx-auto leading-relaxed sm:leading-relaxed lg:leading-relaxed font-normal mb-6 sm:mb-8 px-2 sm:px-0">
+          <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-normal mb-4 sm:mb-6 md:mb-8 px-2 sm:px-0">
             A modern VoIP solution built for the way today's teams communicate — smooth conversations, fast connections, and{' '}
             <span className="font-normal text-gray-900">flexible virtual numbers</span>, all in a{' '}
             <span className="font-normal text-gray-900">unified workspace</span>{' '}
@@ -79,8 +79,8 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
           </p>
 
           {/* Animated Communication Features */}
-          <div className="mb-6 sm:mb-8 mt-4 sm:mt-6 w-screen overflow-hidden -ml-4 sm:-ml-6 lg:-ml-8">
-            <div className="animate-[scroll_20s_linear_infinite] flex gap-4 sm:gap-6 whitespace-nowrap pl-4 sm:pl-6 lg:pl-8">
+          <div className="mb-4 sm:mb-6 md:mb-8 mt-3 sm:mt-4 md:mt-6 w-screen overflow-hidden -ml-4 sm:-ml-6 lg:-ml-8">
+            <div className="animate-[scroll_20s_linear_infinite] flex gap-3 sm:gap-4 md:gap-6 whitespace-nowrap pl-4 sm:pl-6 lg:pl-8">
               {/* Feature Pills */}
               {[
                 { color: 'bg-blue-500', text: 'Voice & VoIP Calling' },
@@ -97,10 +97,10 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
                 { color: 'bg-red-500', text: 'Fax & eFax Services' },
                 { color: 'bg-indigo-500', text: 'DailQ AI Automation' }
               ]).map((item, index) => (
-                <div key={index} className="bg-white/80 backdrop-blur-sm rounded-full px-3 sm:px-4 py-1.5 sm:py-2 shadow-sm border border-gray-200/30 flex-shrink-0">
-                  <div className="flex items-center gap-1.5 sm:gap-2 text-xs text-gray-700">
-                    <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 ${item.color} rounded-full`}></div>
-                    <span className="text-xs sm:text-xs">{item.text}</span>
+                <div key={index} className="bg-white/80 backdrop-blur-sm rounded-full px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 shadow-sm border border-gray-200/30 flex-shrink-0">
+                  <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 text-xs text-gray-700">
+                    <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 ${item.color} rounded-full`}></div>
+                    <span className="text-[10px] sm:text-xs">{item.text}</span>
                   </div>
                 </div>
               ))}
@@ -108,7 +108,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
           </div>
 
           {/* Feature Cards - Responsive Layout */}
-          <div className="mb-6 sm:mb-8">
+          <div className="mb-4 sm:mb-6 md:mb-8">
             {/* Desktop Layout - Single Row */}
             <div className="hidden lg:flex justify-center items-center gap-8 xl:gap-12 max-w-6xl mx-auto">
               <div className="flex items-center gap-4 min-w-fit">
@@ -143,46 +143,13 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
             </div>
 
             {/* Tablet Layout - Stacked but Compact */}
-            <div className="hidden sm:grid lg:hidden grid-cols-1 gap-4 max-w-md mx-auto">
-              <div className="flex items-center gap-4 bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-gray-200/30">
-                <div className="w-10 h-10 rounded-lg border-2 border-primary/20 flex items-center justify-center flex-shrink-0">
-                  <img src="/ai.png" alt="AI Integration" className="w-8 h-8" />
-                </div>
-                <div className="text-left">
-                  <h3 className="font-cal-sans font-normal text-gray-900 text-sm">DailQ AI Integration</h3>
-                  <p className="text-xs text-gray-600">AI-powered routing</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-4 bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-gray-200/30">
-                <div className="w-10 h-10 rounded-lg border-2 border-accent/20 flex items-center justify-center flex-shrink-0">
-                  <img src="/callcenter.png" alt="Call Center" className="w-8 h-8" />
-                </div>
-                <div className="text-left">
-                  <h3 className="font-cal-sans font-normal text-gray-900 text-sm">Call Center Ready</h3>
-                  <p className="text-xs text-gray-600">Complete contact center</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-4 bg-white/50 backdrop-blur-sm rounded-xl p-4 border border-gray-200/30">
-                <div className="w-10 h-10 rounded-lg border-2 border-success/20 flex items-center justify-center flex-shrink-0">
-                  <img src="/anywhere.png" alt="Works Anywhere" className="w-8 h-8" />
-                </div>
-                <div className="text-left">
-                  <h3 className="font-cal-sans font-normal text-gray-900 text-sm">Works Anywhere</h3>
-                  <p className="text-xs text-gray-600">Internet connection required</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile Layout - Stacked Grid */}
-            <div className="sm:hidden grid grid-cols-1 gap-3 max-w-sm mx-auto px-4">
+            <div className="hidden sm:grid lg:hidden grid-cols-1 gap-3 max-w-md mx-auto">
               <div className="flex items-center gap-3 bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-gray-200/30">
                 <div className="w-8 h-8 rounded-lg border-2 border-primary/20 flex items-center justify-center flex-shrink-0">
                   <img src="/ai.png" alt="AI Integration" className="w-6 h-6" />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-cal-sans font-normal text-gray-900 text-xs">DailQ AI Integration</h3>
+                  <h3 className="font-cal-sans font-normal text-gray-900 text-sm">DailQ AI Integration</h3>
                   <p className="text-xs text-gray-600">AI-powered routing</p>
                 </div>
               </div>
@@ -192,7 +159,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
                   <img src="/callcenter.png" alt="Call Center" className="w-6 h-6" />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-cal-sans font-normal text-gray-900 text-xs">Call Center Ready</h3>
+                  <h3 className="font-cal-sans font-normal text-gray-900 text-sm">Call Center Ready</h3>
                   <p className="text-xs text-gray-600">Complete contact center</p>
                 </div>
               </div>
@@ -202,20 +169,53 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
                   <img src="/anywhere.png" alt="Works Anywhere" className="w-6 h-6" />
                 </div>
                 <div className="text-left">
-                  <h3 className="font-cal-sans font-normal text-gray-900 text-xs">Works Anywhere</h3>
+                  <h3 className="font-cal-sans font-normal text-gray-900 text-sm">Works Anywhere</h3>
                   <p className="text-xs text-gray-600">Internet connection required</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Layout - Stacked Grid */}
+            <div className="sm:hidden grid grid-cols-1 gap-2 max-w-sm mx-auto px-4">
+              <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl p-2.5 border border-gray-200/30">
+                <div className="w-6 h-6 rounded-lg border-2 border-primary/20 flex items-center justify-center flex-shrink-0">
+                  <img src="/ai.png" alt="AI Integration" className="w-4 h-4" />
+                </div>
+                <div className="text-left">
+                  <h3 className="font-cal-sans font-normal text-gray-900 text-xs">DailQ AI Integration</h3>
+                  <p className="text-[10px] text-gray-600">AI-powered routing</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl p-2.5 border border-gray-200/30">
+                <div className="w-6 h-6 rounded-lg border-2 border-accent/20 flex items-center justify-center flex-shrink-0">
+                  <img src="/callcenter.png" alt="Call Center" className="w-4 h-4" />
+                </div>
+                <div className="text-left">
+                  <h3 className="font-cal-sans font-normal text-gray-900 text-xs">Call Center Ready</h3>
+                  <p className="text-[10px] text-gray-600">Complete contact center</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl p-2.5 border border-gray-200/30">
+                <div className="w-6 h-6 rounded-lg border-2 border-success/20 flex items-center justify-center flex-shrink-0">
+                  <img src="/anywhere.png" alt="Works Anywhere" className="w-4 h-4" />
+                </div>
+                <div className="text-left">
+                  <h3 className="font-cal-sans font-normal text-gray-900 text-xs">Works Anywhere</h3>
+                  <p className="text-[10px] text-gray-600">Internet connection required</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* CTA Section */}
-          <div className="max-w-md mx-auto px-4 sm:px-0 mt-8 sm:mt-10 lg:mt-12 mb-4 sm:mb-6">
+          <div className="max-w-md mx-auto px-4 sm:px-0 mt-4 sm:mt-6 md:mt-8 lg:mt-10 xl:mt-12 mb-2 sm:mb-4 md:mb-6">
             <div className="flex justify-center">
               <Button 
                 variant="primary"
                 size="md"
-                className="bg-primary hover:bg-primary-800 text-white border-0 font-normal w-full sm:w-auto px-8 py-4 text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-200"
+                className="bg-primary hover:bg-primary-800 text-white border-0 font-normal w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-200"
                 onClick={onRequestAccess}
               >
                 Request Access
@@ -225,24 +225,24 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
         </div>
 
         {/* Trust Indicators - Static positioned at bottom with proper spacing */}
-        <div className="relative mt-4 sm:mt-6 lg:mt-8">
-          <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/30 py-3 sm:py-4 rounded-t-xl">
+        <div className="relative mt-auto pt-2 sm:pt-4 md:pt-6">
+          <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/30 py-2 sm:py-3 md:py-4 rounded-t-xl">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                <svg className="w-3 h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 sm:gap-3 md:gap-6 text-[10px] sm:text-xs md:text-sm text-gray-600">
+                <div className="flex items-center gap-1 sm:gap-2">
+                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                   <span className="whitespace-nowrap font-medium">SOC 2 Compliant</span>
               </div>
-                <div className="flex items-center gap-2">
-                <svg className="w-3 h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-center gap-1 sm:gap-2">
+                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                   <span className="whitespace-nowrap font-medium">99.9% Uptime SLA</span>
               </div>
-                <div className="flex items-center gap-2">
-                <svg className="w-3 h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-center gap-1 sm:gap-2">
+                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                   <span className="whitespace-nowrap font-medium">24/7 Enterprise Support</span>
@@ -273,8 +273,8 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
         <div className="hidden sm:block absolute bottom-1/3 left-1/3 w-1 h-1 rounded-full bg-success/10"></div>
         
         {/* Gradient Orbs - Responsive Sizing */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] bg-gradient-to-br from-accent-50/30 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/3 w-[200px] sm:w-[300px] h-[200px] sm:h-[300px] bg-gradient-to-tl from-primary-50/20 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] sm:w-[250px] md:w-[400px] h-[200px] sm:h-[250px] md:h-[400px] bg-gradient-to-br from-accent-50/30 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/3 w-[150px] sm:w-[200px] md:w-[300px] h-[150px] sm:h-[200px] md:h-[300px] bg-gradient-to-tl from-primary-50/20 to-transparent rounded-full blur-3xl"></div>
       </div>
     </section>
   )

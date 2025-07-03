@@ -16,7 +16,13 @@ interface NotificationClickEvent extends Event {
   readonly action?: string
 }
 
-export default function PWAWrapper({ children }: { children: React.ReactNode }) {
+export default function PWAWrapper({ 
+  children,
+  onLoginRequest
+}: { 
+  children: React.ReactNode,
+  onLoginRequest: () => void
+}) {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)
@@ -40,17 +46,15 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     const wasPromptDismissed = localStorage.getItem('pwa-prompt-dismissed') === 'true'
     setPromptDismissed(wasPromptDismissed)
 
+    if (installed && !isUserLoggedIn) {
+      console.log('🚪 PWA: Installed and not logged in, showing login modal...')
+      onLoginRequest();
+    }
+
     // If PWA is installed and user is logged in, redirect to portal
     if (installed && isUserLoggedIn && window.location.hostname !== 'portal.dailit.com') {
       console.log('🔄 PWA: User is logged in, redirecting to portal...')
       window.location.href = 'https://portal.dailit.com'
-      return
-    }
-
-    // If PWA is installed and not logged in, ensure we're on login page
-    if (installed && !isUserLoggedIn && window.location.pathname !== '/login' && window.location.hostname !== 'portal.dailit.com') {
-      console.log('🔄 PWA: Not logged in, redirecting to login page...')
-      window.location.href = '/login'
       return
     }
 
@@ -162,7 +166,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       window.removeEventListener('message', handleMessage)
       window.removeEventListener('showPWAPrompt', handleLoginAttempt as EventListener)
     }
-  }, [])
+  }, [onLoginRequest])
 
   // Request all communication permissions ONLY after PWA installation
   const requestAllPermissionsAfterInstall = async () => {

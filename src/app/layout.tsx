@@ -1,6 +1,11 @@
+'use client'
+
+import { useState } from 'react'
 import type { Metadata } from "next";
 import "./globals.css";
 import PWAWrapper from "@/components/PWAWrapper";
+import Header from '@/components/Header';
+import LoginModal from '@/components/LoginModal';
 
 export const metadata: Metadata = {
   title: "Dail it. - Simple Business Phone System",
@@ -82,6 +87,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const openLoginModal = () => {
+    setIsLoginModalOpen(true)
+    setTimeout(() => {
+      const event = new CustomEvent('showPWAPrompt')
+      window.dispatchEvent(event)
+    }, 1000)
+  }
+  
+  const closeLoginModal = () => setIsLoginModalOpen(false)
+
   return (
     <html lang="en">
       <head>
@@ -103,9 +120,11 @@ export default function RootLayout({
         <meta name="msapplication-tap-highlight" content="no" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
-      <body className="antialiased">
-        <PWAWrapper>
-        {children}
+      <body className="font-inter antialiased">
+        <PWAWrapper onLoginRequest={openLoginModal}>
+          <Header onLoginClick={openLoginModal} />
+          {children}
+          <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
         </PWAWrapper>
       </body>
     </html>

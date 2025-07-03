@@ -47,7 +47,7 @@ const RequestAccessModal = ({ isOpen, onClose }: RequestAccessModalProps) => {
       }
 
       // Save lead to Supabase
-      await supabaseFunctions.createLead({
+      const result = await supabaseFunctions.createLead({
         business_name: formData.businessName,
         full_name: formData.fullName,
         email: formData.email,
@@ -56,11 +56,32 @@ const RequestAccessModal = ({ isOpen, onClose }: RequestAccessModalProps) => {
         source: 'request_access_modal'
       })
 
-      console.log('Lead saved successfully:', formData)
+      console.log('Lead saved successfully:', result)
       setIsSubmitted(true)
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error saving lead:', err)
-      setError('Something went wrong. Please try again.')
+      
+      // More detailed error messages
+      let errorMessage = 'Something went wrong. Please try again.'
+      
+      if (err.message) {
+        console.error('Error details:', err.message)
+        
+        // Check for specific error types
+        if (err.message.includes('JWT')) {
+          errorMessage = 'Authentication error. Please refresh the page and try again.'
+        } else if (err.message.includes('table') || err.message.includes('relation')) {
+          errorMessage = 'Database configuration error. Please contact support.'
+        } else if (err.message.includes('network') || err.message.includes('fetch')) {
+          errorMessage = 'Network error. Please check your connection and try again.'
+        } else if (err.message.includes('duplicate') || err.message.includes('unique')) {
+          errorMessage = 'An account with this email already exists. Please use a different email.'
+        } else if (err.message.includes('policy')) {
+          errorMessage = 'Access permission error. Please contact support.'
+        }
+      }
+      
+      setError(errorMessage)
     } finally {
       setIsSubmitting(false)
     }

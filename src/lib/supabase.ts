@@ -55,18 +55,48 @@ export const createLead = async (leadData: {
   number_of_users: string
   source?: string
 }) => {
-  const { data, error } = await supabase
-    .from('leads')
-    .insert([leadData])
-    .select()
-    .single()
+  try {
+    console.log('Attempting to create lead with data:', leadData)
+    
+    // First check if we can connect to the database
+    const { data: testData, error: testError } = await supabase
+      .from('leads')
+      .select('count')
+      .limit(1)
+    
+    if (testError) {
+      console.error('Database connection test failed:', testError)
+      throw new Error(`Database connection failed: ${testError.message || 'Unknown error'}`)
+    }
+    
+    // Now try to insert the lead
+    const { data, error } = await supabase
+      .from('leads')
+      .insert([leadData])
+      .select()
+      .single()
 
-  if (error) {
-    console.error('Error creating lead:', error)
-    throw error
+    if (error) {
+      console.error('Error creating lead:', error)
+      
+      // Provide more specific error messages
+      if (error.code === 'PGRST116') {
+        throw new Error('Database table not found. Please contact support.')
+      } else if (error.code === '42501') {
+        throw new Error('Permission denied. Database configuration error.')
+      } else if (error.message) {
+        throw new Error(`Database error: ${error.message}`)
+      } else {
+        throw new Error('Unknown database error occurred')
+      }
+    }
+
+    console.log('Lead created successfully:', data)
+    return data
+  } catch (err: any) {
+    console.error('createLead function error:', err)
+    throw err
   }
-
-  return data
 }
 
 export const createContactSubmission = async (contactData: {

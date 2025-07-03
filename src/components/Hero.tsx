@@ -83,7 +83,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
 
             {/* Animated Communication Features */}
             <div className="mb-6 sm:mb-8 mt-3 sm:mt-4 md:mt-6 w-screen overflow-hidden -ml-4 sm:-ml-6 lg:-ml-8">
-              <div className="animate-[scroll_20s_linear_infinite] flex gap-3 sm:gap-4 md:gap-6 whitespace-nowrap pl-4 sm:pl-6 lg:pl-8">
+              <div className="animate-[scroll_20s_linear_infinite] flex gap-3 sm:gap-4 md:gap-6 whitespace-nowrap px-4 sm:px-6 lg:px-8">
                 {/* Feature Pills */}
                 {[
                   { color: 'bg-blue-500', text: 'Voice & VoIP Calling' },
@@ -211,47 +211,46 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
                 </div>
               </div>
             </div>
+
+            {/* CTA Section */}
+            <div className="max-w-md mx-auto mt-6 sm:mt-8">
+              <div className="flex justify-center">
+                <Button 
+                  variant="primary"
+                  size="md"
+                  className="bg-primary hover:bg-primary-800 text-white border-0 font-normal w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-200"
+                  onClick={onRequestAccess}
+                >
+                  Request Access
+                </Button>
+              </div>
+            </div>
+
           </div>
         </div>
 
-        {/* Bottom Group: CTA Button + Trust Indicators */}
-        <div className="pb-4">
-          {/* CTA Section */}
-          <div className="max-w-md mx-auto mb-4">
-            <div className="flex justify-center">
-              <Button 
-                variant="primary"
-                size="md"
-                className="bg-primary hover:bg-primary-800 text-white border-0 font-normal w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-200"
-                onClick={onRequestAccess}
-              >
-                Request Access
-              </Button>
-            </div>
-          </div>
-          {/* Trust Indicators */}
-          <div className="relative">
-            <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/30 py-2 sm:py-3 md:py-4 rounded-t-xl">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 sm:gap-3 md:gap-6 text-[10px] sm:text-xs md:text-sm text-gray-600">
-                  <div className="flex items-center gap-1 sm:gap-2">
-                  <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                    <span className="whitespace-nowrap font-medium">SOC 2 Compliant</span>
-                </div>
-                  <div className="flex items-center gap-1 sm:gap-2">
-                  <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                    <span className="whitespace-nowrap font-medium">99.9% Uptime SLA</span>
-                </div>
-                  <div className="flex items-center gap-1 sm:gap-2">
-                  <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                    <span className="whitespace-nowrap font-medium">24/7 Enterprise Support</span>
-                  </div>
+        {/* Trust Indicators */}
+        <div className="relative pt-2 sm:pt-4 md:pt-6 pb-4">
+          <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/30 py-2 sm:py-3 md:py-4 rounded-t-xl">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-2 sm:gap-3 md:gap-6 text-[10px] sm:text-xs md:text-sm text-gray-600">
+                <div className="flex items-center gap-1 sm:gap-2">
+                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                  <span className="whitespace-nowrap font-medium">SOC 2 Compliant</span>
+              </div>
+                <div className="flex items-center gap-1 sm:gap-2">
+                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                  <span className="whitespace-nowrap font-medium">99.9% Uptime SLA</span>
+              </div>
+                <div className="flex items-center gap-1 sm:gap-2">
+                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-success-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                  <span className="whitespace-nowrap font-medium">24/7 Enterprise Support</span>
                 </div>
               </div>
             </div>

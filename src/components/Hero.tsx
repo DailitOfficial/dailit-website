@@ -74,7 +74,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
             </div>
 
             {/* Subheadline */}
-            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-normal mb-6 sm:mb-8 px-2 sm:px-0">
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-normal mb-6 sm:mb-8">
               A modern VoIP solution built for the way today's teams communicate — smooth conversations, fast connections, and{' '}
               <span className="font-normal text-gray-900">flexible virtual numbers</span>, all in a{' '}
               <span className="font-normal text-gray-900">unified workspace</span>{' '}
@@ -179,7 +179,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
               </div>
 
               {/* Mobile Layout - Stacked Grid */}
-              <div className="sm:hidden grid grid-cols-1 gap-2 max-w-sm mx-auto px-4">
+              <div className="sm:hidden grid grid-cols-1 gap-2 max-w-sm mx-auto">
                 <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl p-2.5 border border-gray-200/30">
                   <div className="w-6 h-6 rounded-lg border-2 border-primary/20 bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <img src="/ai.png" alt="AI Integration" className="w-4 h-4" />
@@ -217,7 +217,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
         {/* Bottom Group: CTA Button + Trust Indicators */}
         <div className="pb-4">
           {/* CTA Section */}
-          <div className="max-w-md mx-auto px-4 sm:px-0 mb-4">
+          <div className="max-w-md mx-auto mb-4">
             <div className="flex justify-center">
               <Button 
                 variant="primary"

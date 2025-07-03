@@ -52,11 +52,12 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
             {/* Animated Headline */}
             <div className="font-cal-sans font-normal tracking-tight text-gray-900 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-2 sm:mb-3 md:mb-4 max-w-4xl mx-auto">
               <div className="mb-1 sm:mb-2">Business Communications</div>
-              <div className="relative h-8 sm:h-10 md:h-12 lg:h-16 xl:h-20 overflow-hidden">
+              <div className="grid overflow-hidden">
                 {taglines.map((tagline, index) => (
                   <div
                     key={index}
-                    className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                    style={{ gridColumn: 1, gridRow: 1 }}
+                    className={`transition-all duration-700 ease-in-out ${
                       index === currentTagline
                         ? 'opacity-100 translate-y-0'
                         : index < currentTagline

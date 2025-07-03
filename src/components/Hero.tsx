@@ -40,7 +40,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
         <div className="my-auto">
           <div className="text-center pt-16 md:pt-8">
             {/* Announcement Badge */}
-            <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-normal bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-200 mb-4 sm:mb-6">
+            <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-normal bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-200 mb-4 sm:mb-6 md:mb-8">
               <span className="relative flex h-1.5 w-1.5 mr-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-500"></span>
@@ -50,8 +50,8 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
             </div>
 
             {/* Animated Headline */}
-            <div className="font-cal-sans font-normal tracking-tight text-gray-900 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-4 sm:mb-6 max-w-4xl mx-auto">
-              <div className="mb-1 sm:mb-2">Business Communications</div>
+            <div className="font-cal-sans font-normal tracking-tight text-gray-900 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl mb-4 sm:mb-6 md:mb-8 max-w-4xl mx-auto">
+              <div className="mb-2 sm:mb-3 md:mb-4">Business Communications</div>
               <div className="grid overflow-hidden">
                 {taglines.map((tagline, index) => (
                   <div
@@ -74,7 +74,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
             </div>
 
             {/* Subheadline */}
-            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-normal mb-6 sm:mb-8">
+            <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-600 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-normal mb-4 sm:mb-6 md:mb-8">
               A modern VoIP solution built for the way today's teams communicate — smooth conversations, fast connections, and{' '}
               <span className="font-normal text-gray-900">flexible virtual numbers</span>, all in a{' '}
               <span className="font-normal text-gray-900">unified workspace</span>{' '}
@@ -82,7 +82,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
             </p>
 
             {/* Animated Communication Features */}
-            <div className="mb-6 sm:mb-8 mt-3 sm:mt-4 md:mt-6 w-screen overflow-hidden -ml-4 sm:-ml-6 lg:-ml-8">
+            <div className="mb-4 sm:mb-6 md:mb-8 mt-2 sm:mt-3 md:mt-4 w-screen overflow-hidden -ml-4 sm:-ml-6 lg:-ml-8">
               <div className="animate-[scroll_20s_linear_infinite] flex gap-3 sm:gap-4 md:gap-6 whitespace-nowrap px-4 sm:px-6 lg:px-8">
                 {/* Feature Pills */}
                 {[
@@ -111,7 +111,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
             </div>
 
             {/* Feature Cards - Responsive Layout */}
-            <div className="mb-6 sm:mb-8">
+            <div className="mb-4 sm:mb-6 md:mb-8">
               {/* Desktop Layout - Single Row */}
               <div className="hidden lg:flex justify-center items-center gap-8 xl:gap-12 max-w-6xl mx-auto">
                 <div className="flex items-center gap-4 min-w-fit">

@@ -115,7 +115,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
               {/* Desktop Layout - Single Row */}
               <div className="hidden lg:flex justify-center items-center gap-8 xl:gap-12 max-w-6xl mx-auto">
                 <div className="flex items-center gap-4 min-w-fit">
-                  <div className="w-12 h-12 rounded-lg border-2 border-primary/20 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-lg border-2 border-primary/20 bg-primary/10 flex items-center justify-center">
                     <img src="/ai.png" alt="AI Integration" className="w-10 h-10" />
                   </div>
                   <div className="text-left">
@@ -125,7 +125,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
                 </div>
                 
                 <div className="flex items-center gap-4 min-w-fit">
-                  <div className="w-12 h-12 rounded-lg border-2 border-accent/20 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-lg border-2 border-accent/20 bg-accent/10 flex items-center justify-center">
                     <img src="/callcenter.png" alt="Call Center" className="w-10 h-10" />
                   </div>
                   <div className="text-left">
@@ -135,7 +135,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
                 </div>
                 
                 <div className="flex items-center gap-4 min-w-fit">
-                  <div className="w-12 h-12 rounded-lg border-2 border-success/20 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-lg border-2 border-success/20 bg-success/10 flex items-center justify-center">
                     <img src="/anywhere.png" alt="Works Anywhere" className="w-10 h-10" />
                   </div>
                   <div className="text-left">
@@ -148,7 +148,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
               {/* Tablet Layout - Stacked but Compact */}
               <div className="hidden sm:grid lg:hidden grid-cols-1 gap-3 max-w-md mx-auto">
                 <div className="flex items-center gap-3 bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-gray-200/30">
-                  <div className="w-8 h-8 rounded-lg border-2 border-primary/20 flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 rounded-lg border-2 border-primary/20 bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <img src="/ai.png" alt="AI Integration" className="w-6 h-6" />
                   </div>
                   <div className="text-left">
@@ -158,7 +158,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
                 </div>
                 
                 <div className="flex items-center gap-3 bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-gray-200/30">
-                  <div className="w-8 h-8 rounded-lg border-2 border-accent/20 flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 rounded-lg border-2 border-accent/20 bg-accent/10 flex items-center justify-center flex-shrink-0">
                     <img src="/callcenter.png" alt="Call Center" className="w-6 h-6" />
                   </div>
                   <div className="text-left">
@@ -168,7 +168,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
                 </div>
                 
                 <div className="flex items-center gap-3 bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-gray-200/30">
-                  <div className="w-8 h-8 rounded-lg border-2 border-success/20 flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 rounded-lg border-2 border-success/20 bg-success/10 flex items-center justify-center flex-shrink-0">
                     <img src="/anywhere.png" alt="Works Anywhere" className="w-6 h-6" />
                   </div>
                   <div className="text-left">
@@ -181,7 +181,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
               {/* Mobile Layout - Stacked Grid */}
               <div className="sm:hidden grid grid-cols-1 gap-2 max-w-sm mx-auto px-4">
                 <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl p-2.5 border border-gray-200/30">
-                  <div className="w-6 h-6 rounded-lg border-2 border-primary/20 flex items-center justify-center flex-shrink-0">
+                  <div className="w-6 h-6 rounded-lg border-2 border-primary/20 bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <img src="/ai.png" alt="AI Integration" className="w-4 h-4" />
                   </div>
                   <div className="text-left">
@@ -191,7 +191,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
                 </div>
                 
                 <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl p-2.5 border border-gray-200/30">
-                  <div className="w-6 h-6 rounded-lg border-2 border-accent/20 flex items-center justify-center flex-shrink-0">
+                  <div className="w-6 h-6 rounded-lg border-2 border-accent/20 bg-accent/10 flex items-center justify-center flex-shrink-0">
                     <img src="/callcenter.png" alt="Call Center" className="w-4 h-4" />
                   </div>
                   <div className="text-left">
@@ -201,7 +201,7 @@ const Hero = ({ onRequestAccess }: HeroProps) => {
                 </div>
                 
                 <div className="flex items-center gap-2 bg-white/50 backdrop-blur-sm rounded-xl p-2.5 border border-gray-200/30">
-                  <div className="w-6 h-6 rounded-lg border-2 border-success/20 flex items-center justify-center flex-shrink-0">
+                  <div className="w-6 h-6 rounded-lg border-2 border-success/20 bg-success/10 flex items-center justify-center flex-shrink-0">
                     <img src="/anywhere.png" alt="Works Anywhere" className="w-4 h-4" />
                   </div>
                   <div className="text-left">

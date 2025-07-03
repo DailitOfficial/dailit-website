@@ -47,6 +47,13 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       return
     }
 
+    // If PWA is installed and not logged in, ensure we're on login page
+    if (installed && !isUserLoggedIn && window.location.pathname !== '/login' && window.location.hostname !== 'portal.dailit.com') {
+      console.log('🔄 PWA: Not logged in, redirecting to login page...')
+      window.location.href = '/login'
+      return
+    }
+
     // Listen for beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()

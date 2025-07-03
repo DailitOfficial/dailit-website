@@ -2,7 +2,7 @@
   "name": "Dail it. - Business Phone System",
   "short_name": "Dail it.",
   "description": "Simple business phone system with AI automation and unified communications",
-  "start_url": "/",
+  "start_url": "/login",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#101828",

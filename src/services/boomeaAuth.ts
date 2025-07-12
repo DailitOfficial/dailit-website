@@ -100,13 +100,6 @@ class BoomeaAuthService {
         }
       }
 
-      // Extract cookies from response headers
-      const setCookieHeaders = response.headers.get('set-cookie')
-      if (setCookieHeaders) {
-        console.log('🍪 Received cookies from Boomea:', setCookieHeaders)
-        this.setBoomeaCookies(setCookieHeaders)
-      }
-
       console.log('✅ Authentication successful!')
       console.log('🎫 Session token received:', sessionToken)
 
@@ -135,37 +128,6 @@ class BoomeaAuthService {
         success: false,
         error: `Network error: ${error instanceof Error ? error.message : 'Please check your connection and try again.'}`
       }
-    }
-  }
-
-  /**
-   * Set Boomea cookies in the browser
-   * This allows the user to be automatically logged in when redirected to Boomea
-   */
-  private setBoomeaCookies(setCookieHeader: string): void {
-    try {
-      // Parse the set-cookie header and extract MMAUTHTOKEN and MMUSERID
-      const cookies = setCookieHeader.split(',').map(cookie => cookie.trim())
-      
-      cookies.forEach(cookie => {
-        if (cookie.startsWith('MMAUTHTOKEN=') || cookie.startsWith('MMUSERID=')) {
-          // Extract cookie name and value
-          const [nameValue] = cookie.split(';')
-          const [name, value] = nameValue.split('=')
-          
-          // Set the cookie for the Boomea domain with proper attributes
-          const cookieString = `${name}=${value}; domain=.boomea.com; path=/; secure; samesite=none; max-age=15552000`
-          document.cookie = cookieString
-          console.log(`🍪 Set cookie: ${name}=${value}`)
-          
-          // Also try setting without domain restriction for local testing
-          const localCookieString = `${name}=${value}; path=/; secure; samesite=none; max-age=15552000`
-          document.cookie = localCookieString
-          console.log(`🍪 Set local cookie: ${name}=${value}`)
-        }
-      })
-    } catch (error) {
-      console.error('Error setting Boomea cookies:', error)
     }
   }
 
@@ -235,18 +197,20 @@ class BoomeaAuthService {
 
   /**
    * Redirect user to their Boomea workspace
-   * Updated to use the correct URL format based on the error you encountered
+   * Since we can't set cross-domain cookies, we'll redirect with instructions
    */
   redirectToDashboard(teamSlug: string): void {
     try {
-      // Use the correct URL format that matches Boomea's structure
-      const dashboardUrl = `${this.DASHBOARD_URL}/rio/channels/general`
-      console.log('🚀 Redirecting to Boomea dashboard:', dashboardUrl)
+      // Redirect directly to Boomea's login page with the target URL
+      const dashboardUrl = `${this.DASHBOARD_URL}/login?redirect_to=%2Frio%2Fchannels%2Fgeneral`
+      console.log('🚀 Redirecting to Boomea login with redirect parameter:', dashboardUrl)
       
-      // Add a small delay to ensure cookies are set before redirect
-      setTimeout(() => {
+      // Show a message to the user before redirecting
+      const message = `✅ Authentication Successful!\n\nYour credentials have been verified with Boomea.\n\nYou will now be redirected to Boomea's login page.\n\nPlease log in with the same credentials:\n• Email: ${localStorage.getItem('boomea_email') || 'your email'}\n• Password: (the password you just entered)\n\nThis is required due to browser security restrictions.`
+      
+      if (confirm(message)) {
         window.location.href = dashboardUrl
-      }, 100)
+      }
     } catch (error) {
       console.error('Dashboard redirect error:', error)
       // Fallback to general dashboard
@@ -255,29 +219,21 @@ class BoomeaAuthService {
   }
 
   /**
-   * Alternative redirect method that tries different URL formats
+   * Alternative redirect method that provides better user experience
    */
   redirectToDashboardWithTeam(teamSlug: string): void {
     try {
-      // Try multiple URL formats to find the correct one
-      const possibleUrls = [
-        `${this.DASHBOARD_URL}/rio/channels/general`,
-        `${this.DASHBOARD_URL}/${teamSlug}/channels/general`,
-        `${this.DASHBOARD_URL}/channels/general`,
-        `${this.DASHBOARD_URL}/dashboard`,
-        this.DASHBOARD_URL
-      ]
+      // Since we can't set cross-domain cookies, we'll redirect to Boomea's login
+      // with the target URL as a parameter
+      const dashboardUrl = `${this.DASHBOARD_URL}/login?redirect_to=%2Frio%2Fchannels%2Fgeneral`
+      console.log('🚀 Redirecting to Boomea login with redirect parameter:', dashboardUrl)
       
-      console.log('🚀 Trying redirect URLs:', possibleUrls)
+      // Show a message to the user before redirecting
+      const message = `✅ Authentication Successful!\n\nYour credentials have been verified with Boomea.\n\nYou will now be redirected to Boomea's login page.\n\nPlease log in with the same credentials:\n• Email: ${localStorage.getItem('boomea_email') || 'your email'}\n• Password: (the password you just entered)\n\nThis is required due to browser security restrictions.`
       
-      // For now, use the first URL that matches the pattern from your error
-      const dashboardUrl = possibleUrls[0]
-      console.log('🚀 Redirecting to Boomea dashboard:', dashboardUrl)
-      
-      // Add a small delay to ensure cookies are set before redirect
-      setTimeout(() => {
+      if (confirm(message)) {
         window.location.href = dashboardUrl
-      }, 100)
+      }
     } catch (error) {
       console.error('Dashboard redirect error:', error)
       // Fallback to general dashboard

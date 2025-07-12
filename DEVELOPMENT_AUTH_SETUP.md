@@ -10,7 +10,7 @@ The login system is currently set up in **development mode** to allow testing wi
 - **Login**: Accepts any email/password combination
 - **Password Reset**: Simulates successful password reset
 - **Authentication**: Generates mock tokens and user data
-- **Redirect**: Still redirects to `https://app.boomea.com/dashboard` (you can change this for testing)
+- **Redirect**: Redirects to `https://app.boomea.com` (main page, mobile-friendly)
 
 ### Production Mode (When Ready)
 - **Login**: Will connect to actual Boomea API
@@ -24,7 +24,7 @@ The login system is currently set up in **development mode** to allow testing wi
 2. Click "Sign In" in the header
 3. Enter any email and password (e.g., `test@example.com` / `password123`)
 4. Click "Sign In"
-5. You should see "Login successful" and be redirected to Boomea dashboard
+5. You should see "Login successful" and be redirected to Boomea main page
 
 ### 2. Test Password Reset
 1. In the login modal, click "Forgot password?"
@@ -134,9 +134,23 @@ Enable debug logging by checking:
 4. **Test with real credentials** and real Boomea service
 5. **Deploy to production** with proper error handling
 
+## Mobile Experience
+
+### Mobile Browser Handling
+- **Detection**: Automatically detects mobile browsers
+- **Redirect**: Goes to `https://app.boomea.com` (main page) instead of `/dashboard` to avoid mobile app deep linking issues
+- **App Integration**: If Boomea app is installed, it may open automatically
+- **Fallback**: If no app is installed, user can continue in browser
+
+### Mobile App Deep Linking
+- **Issue**: `/dashboard` endpoint may trigger mobile app deep linking that fails
+- **Solution**: Redirect to main page (`https://app.boomea.com`) which is more reliable
+- **User Experience**: Smoother transition without "Cannot connect to" errors
+
 ## Notes
 
 - The admin login system (`/admin`) is separate and uses Supabase authentication
 - The user login system (popup) uses the new Boomea integration
 - Both systems can coexist without conflicts
-- PWA integration works with both systems 
+- PWA integration works with both systems
+- Mobile users get redirected to main Boomea page to avoid app deep linking issues 

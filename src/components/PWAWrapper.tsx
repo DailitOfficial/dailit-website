@@ -43,7 +43,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     // If PWA is installed and user is logged in, redirect to Boomea
     if (installed && isUserLoggedIn && window.location.hostname !== 'app.boomea.com') {
       console.log('🔄 PWA: User is logged in, redirecting to Boomea...')
-      window.location.href = 'https://app.boomea.com/dashboard'
+      window.location.href = 'https://app.boomea.com'
       return
     }
 
@@ -102,7 +102,7 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       if (installed) {
         if (newLoginState) {
           console.log('✅ PWA: User logged in, redirecting to Boomea...')
-          window.location.href = 'https://app.boomea.com/dashboard'
+          window.location.href = 'https://app.boomea.com'
         } else {
           console.log('🚪 PWA: User logged out, redirecting to main site...')
           window.location.href = 'https://dailit.com'

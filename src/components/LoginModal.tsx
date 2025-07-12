@@ -89,8 +89,16 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         // Close modal
         onClose()
         
-        // Redirect to Boomea dashboard
-        window.location.href = response.redirectUrl || 'https://app.boomea.com/dashboard'
+        // Check if user is on mobile
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        
+        if (isMobile) {
+          // For mobile users, show a message about the redirect
+          console.log('Mobile user detected - redirecting to Boomea main page')
+        }
+        
+        // Redirect to Boomea main page (not dashboard to avoid mobile app deep linking issues)
+        window.location.href = response.redirectUrl || 'https://app.boomea.com'
       } else {
         setErrors({ general: response.message || 'Login failed. Please try again.' })
       }

@@ -80,7 +80,7 @@ class AuthService {
            message: 'Login successful',
            token: data.token,
            user: data.user,
-           redirectUrl: 'https://app.boomea.com/dashboard' // Redirect to Boomea dashboard
+           redirectUrl: 'https://app.boomea.com' // Redirect to Boomea main page
          }
       } else {
         throw new Error(data.message || 'Login failed')

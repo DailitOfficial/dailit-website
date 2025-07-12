@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
         message: 'Login successful',
         token: data.token,
         user: data.user,
-        redirectUrl: 'https://app.boomea.com/dashboard'
+        redirectUrl: 'https://app.boomea.com'
       })
     } else {
       return NextResponse.json(

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import { authService, type LoginCredentials } from '@/services/auth'
 
 interface LoginModalProps {
   isOpen: boolean
@@ -17,6 +18,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     email: '',
+    username: '',
     password: '',
     confirmPassword: '',
     resetCode: '',
@@ -40,16 +42,17 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const handleLogin = async () => {
     const newErrors: Record<string, string> = {}
     
-    if (!formData.email) {
-      newErrors.email = 'Email is required'
-    } else if (!validateEmail(formData.email)) {
+    // Check if either email or username is provided
+    if (!formData.email && !formData.username) {
+      newErrors.email = 'Email or username is required'
+    } else if (formData.email && !validateEmail(formData.email)) {
       newErrors.email = 'Please enter a valid email address'
     }
     
     if (!formData.password) {
       newErrors.password = 'Password is required'
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters'
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters'
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -60,11 +63,23 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setIsLoading(true)
     
     try {
-      // Simulate API call for now
-      setTimeout(() => {
-        // Set login state in localStorage
-        localStorage.setItem('dailit-login-state', 'logged-in')
-        
+      // Prepare credentials for Boomea authentication
+      const credentials: LoginCredentials = {
+        password: formData.password,
+        rememberMe: formData.rememberMe
+      }
+
+      // Use email if provided, otherwise use username
+      if (formData.email) {
+        credentials.email = formData.email
+      } else if (formData.username) {
+        credentials.username = formData.username
+      }
+
+      // Authenticate with Boomea
+      const response = await authService.login(credentials)
+      
+      if (response.success) {
         // Dispatch custom event to notify PWA wrapper
         const loginEvent = new CustomEvent('loginStateChange', {
           detail: { isLoggedIn: true }
@@ -74,11 +89,15 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         // Close modal
         onClose()
         
-        // Redirect to portal (PWA wrapper will handle this if installed)
-        window.location.href = 'https://portal.dailit.com'
-      }, 2000)
-    } catch (error) {
-      setErrors({ general: 'Network error. Please check your connection and try again.' })
+        // Redirect to Boomea dashboard
+        window.location.href = response.redirectUrl || 'https://app.boomea.com/dashboard'
+      } else {
+        setErrors({ general: response.message || 'Login failed. Please try again.' })
+      }
+    } catch (error: any) {
+      console.error('Login error:', error)
+      setErrors({ general: error.message || 'Network error. Please check your connection and try again.' })
+    } finally {
       setIsLoading(false)
     }
   }
@@ -97,13 +116,18 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setIsLoading(true)
     
     try {
-      // Simulate API call
-      setTimeout(() => {
+      // Use Boomea password reset service
+      const response = await authService.resetPassword(formData.email)
+      
+      if (response.success) {
         setCurrentView('reset-password')
-        setIsLoading(false)
-      }, 1500)
-    } catch (error) {
-      setErrors({ general: 'Network error. Please try again.' })
+        setErrors({}) // Clear any existing errors
+      } else {
+        setErrors({ email: response.message || 'Failed to send reset email.' })
+      }
+    } catch (error: any) {
+      setErrors({ general: error.message || 'Network error. Please try again.' })
+    } finally {
       setIsLoading(false)
     }
   }
@@ -143,6 +167,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           setCurrentView('login')
           setFormData({
             email: formData.email,
+            username: '',
             password: '',
             confirmPassword: '',
             resetCode: '',
@@ -159,6 +184,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const resetForm = () => {
     setFormData({
       email: '',
+      username: '',
       password: '',
       confirmPassword: '',
       resetCode: '',
@@ -204,14 +230,24 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         <div className="space-y-5">
           <div>
             <input
-              type="email"
+              type="text"
               id="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
+              value={formData.email || formData.username}
+              onChange={(e) => {
+                const value = e.target.value
+                // Check if it looks like an email
+                if (value.includes('@')) {
+                  handleInputChange('email', value)
+                  handleInputChange('username', '')
+                } else {
+                  handleInputChange('username', value)
+                  handleInputChange('email', '')
+                }
+              }}
               className={`w-full px-5 py-4 bg-gray-50 border-0 rounded-2xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all ${
                 errors.email ? 'ring-2 ring-red-300 bg-red-50' : ''
               }`}
-              placeholder="Email address"
+              placeholder="Email or username"
               disabled={isLoading}
             />
             {errors.email && (
@@ -311,7 +347,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           Reset Password
         </h1>
         <p className="text-gray-500 text-base leading-relaxed">
-          Enter your email and we'll send you a reset code
+          Enter your email and we'll send you a password reset link
         </p>
       </div>
 
@@ -351,10 +387,10 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           {isLoading ? (
             <div className="flex items-center justify-center">
               <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent mr-3"></div>
-              Sending Reset Code...
+              Sending reset link...
             </div>
           ) : (
-            'Send Reset Code'
+            'Send Reset Link'
           )}
         </button>
 

@@ -7,7 +7,16 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables. Please check your .env.local file.')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+    storageKey: 'dailit-admin-auth',
+    flowType: 'pkce'
+  }
+})
 
 // Types for our database tables
 export interface Lead {
@@ -231,49 +240,125 @@ export interface AdminUser {
 
 // Authentication functions
 export const signInWithEmail = async (email: string, password: string) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
+  try {
+    // Clear any existing session first to avoid refresh token conflicts
+    await supabase.auth.signOut()
+    
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
 
-  if (error) {
-    console.error('Error signing in:', error)
+    if (error) {
+      console.error('Error signing in:', error)
+      
+      // Handle specific refresh token errors
+      if (error.message?.includes('Refresh Token Not Found') || 
+          error.message?.includes('Invalid Refresh Token')) {
+        console.log('Refresh token error during sign in - clearing session')
+        await supabase.auth.signOut()
+        throw new Error('Session expired. Please try logging in again.')
+      }
+      
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    console.error('Sign in error:', error)
     throw error
   }
-
-  return data
 }
 
 export const signOut = async () => {
-  const { error } = await supabase.auth.signOut()
+  try {
+    const { error } = await supabase.auth.signOut()
 
-  if (error) {
-    console.error('Error signing out:', error)
+    if (error) {
+      console.error('Error signing out:', error)
+      throw error
+    }
+  } catch (error) {
+    console.error('Sign out error:', error)
+    // Even if sign out fails, clear local storage
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('dailit-admin-auth')
+      localStorage.removeItem('sb-' + supabaseUrl.split('//')[1].split('.')[0] + '-auth-token')
+    }
     throw error
+  }
+}
+
+// Utility function to clear all authentication state
+export const clearAuthState = async () => {
+  try {
+    await supabase.auth.signOut()
+  } catch (error) {
+    console.log('Error during sign out:', error)
+  }
+  
+  // Clear all possible auth-related localStorage items
+  if (typeof window !== 'undefined') {
+    const keysToRemove = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key && (key.includes('auth') || key.includes('supabase') || key.includes('dailit-admin'))) {
+        keysToRemove.push(key)
+      }
+    }
+    
+    keysToRemove.forEach(key => {
+      localStorage.removeItem(key)
+    })
+    
+    console.log('Cleared authentication state')
   }
 }
 
 export const getCurrentUser = async () => {
-  // First check if session exists to avoid AuthSessionMissingError
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-  
-  if (sessionError) {
-    console.error('Error getting session:', sessionError)
-    throw sessionError
-  }
-  
-  if (!session) {
+  try {
+    // First check if session exists to avoid AuthSessionMissingError
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+    
+    if (sessionError) {
+      console.error('Error getting session:', sessionError)
+      
+      // Handle refresh token errors
+      if (sessionError.message?.includes('Refresh Token Not Found') || 
+          sessionError.message?.includes('Invalid Refresh Token')) {
+        console.log('Refresh token error in getCurrentUser - clearing session')
+        await supabase.auth.signOut()
+        return null
+      }
+      
+      throw sessionError
+    }
+    
+    if (!session) {
+      return null
+    }
+
+    const { data: { user }, error } = await supabase.auth.getUser()
+
+    if (error) {
+      console.error('Error getting current user:', error)
+      
+      // Handle refresh token errors
+      if (error.message?.includes('Refresh Token Not Found') || 
+          error.message?.includes('Invalid Refresh Token')) {
+        console.log('Refresh token error in getUser - clearing session')
+        await supabase.auth.signOut()
+        return null
+      }
+      
+      throw error
+    }
+
+    return user
+  } catch (error) {
+    console.error('getCurrentUser error:', error)
     return null
   }
-
-  const { data: { user }, error } = await supabase.auth.getUser()
-
-  if (error) {
-    console.error('Error getting current user:', error)
-    throw error
-  }
-
-  return user
 }
 
 export const getCurrentAdminUser = async () => {

@@ -40,10 +40,10 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     const wasPromptDismissed = localStorage.getItem('pwa-prompt-dismissed') === 'true'
     setPromptDismissed(wasPromptDismissed)
 
-    // If PWA is installed and user is logged in, redirect to portal
-    if (installed && isUserLoggedIn && window.location.hostname !== 'portal.dailit.com') {
-      console.log('🔄 PWA: User is logged in, redirecting to portal...')
-      window.location.href = 'https://portal.dailit.com'
+    // If PWA is installed and user is logged in, redirect to Boomea
+    if (installed && isUserLoggedIn && window.location.hostname !== 'app.boomea.com') {
+      console.log('🔄 PWA: User is logged in, redirecting to Boomea...')
+      window.location.href = 'https://app.boomea.com/dashboard'
       return
     }
 
@@ -101,8 +101,8 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       
       if (installed) {
         if (newLoginState) {
-          console.log('✅ PWA: User logged in, redirecting to portal...')
-          window.location.href = 'https://portal.dailit.com'
+          console.log('✅ PWA: User logged in, redirecting to Boomea...')
+          window.location.href = 'https://app.boomea.com/dashboard'
         } else {
           console.log('🚪 PWA: User logged out, redirecting to main site...')
           window.location.href = 'https://dailit.com'
@@ -116,17 +116,17 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
         const newValue = event.newValue
         setIsLoggedIn(newValue === 'logged-in')
         
-        if (installed && newValue === 'logged-out' && window.location.hostname === 'portal.dailit.com') {
+        if (installed && newValue === 'logged-out' && window.location.hostname === 'app.boomea.com') {
           console.log('🚪 PWA: Logout detected, redirecting to main site...')
           window.location.href = 'https://dailit.com'
         }
       }
     }
 
-    // Listen for messages from portal (logout events)
+    // Listen for messages from Boomea (logout events)
     const handleMessage = (event: MessageEvent) => {
-      if (event.origin === 'https://portal.dailit.com' && event.data?.type === 'logout') {
-        console.log('🚪 PWA: Logout message received from portal')
+      if (event.origin === 'https://app.boomea.com' && event.data?.type === 'logout') {
+        console.log('🚪 PWA: Logout message received from Boomea')
         setIsLoggedIn(false)
         localStorage.setItem('dailit-login-state', 'logged-out')
         if (installed) {

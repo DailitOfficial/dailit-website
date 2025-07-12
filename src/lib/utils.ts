@@ -37,12 +37,12 @@ export const PWAAuth = {
   }
 }
 
-// Portal integration script for logout detection
-export const createPortalLogoutScript = () => {
+// Boomea integration script for logout detection
+export const createBoomeaLogoutScript = () => {
   return `
-    // Script to be injected into portal.dailit.com for logout detection
+    // Script to be injected into app.boomea.com for logout detection
     (function() {
-      // Listen for logout events in portal
+      // Listen for logout events in Boomea
       const originalFetch = window.fetch;
       window.fetch = function(...args) {
         return originalFetch(...args).then(response => {
@@ -84,7 +84,7 @@ export const createPortalLogoutScript = () => {
         if (window.location.href !== currentUrl) {
           currentUrl = window.location.href;
           if (currentUrl.includes('login') || currentUrl.includes('signin') || 
-              currentUrl.includes('auth') || !currentUrl.includes('portal')) {
+              currentUrl.includes('auth') || !currentUrl.includes('app.boomea.com')) {
             localStorage.setItem('dailit-login-state', 'logged-out');
             if (window.parent && window.parent !== window) {
               window.parent.postMessage({ type: 'logout' }, 'https://dailit.com');

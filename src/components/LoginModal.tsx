@@ -98,7 +98,9 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         }
         
         // Redirect to Boomea main page (not dashboard to avoid mobile app deep linking issues)
-        window.location.href = response.redirectUrl || 'https://app.boomea.com'
+        const redirectUrl = response.redirectUrl || 'https://app.boomea.com'
+        console.log('Redirecting to:', redirectUrl)
+        window.location.href = redirectUrl
       } else {
         setErrors({ general: response.message || 'Login failed. Please try again.' })
       }

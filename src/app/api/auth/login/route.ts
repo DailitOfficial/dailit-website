@@ -117,13 +117,15 @@ export async function POST(request: NextRequest) {
 
     // If login successful (development mode)
     if (data.success || data.token) {
-      return NextResponse.json({
+      const responseData = {
         success: true,
         message: 'Login successful',
         token: data.token,
         user: data.user,
         redirectUrl: 'https://app.boomea.com'
-      })
+      }
+      console.log('API returning redirect URL:', responseData.redirectUrl)
+      return NextResponse.json(responseData)
     } else {
       return NextResponse.json(
         { success: false, message: 'Login failed' },

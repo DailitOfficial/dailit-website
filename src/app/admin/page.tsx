@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { supabase, clearAuthState } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import AdminLogin from '@/components/AdminLogin'
 import AdminDashboard from '@/components/AdminDashboard'
 import type { User } from '@supabase/supabase-js'
@@ -34,23 +34,11 @@ export default function AdminPage() {
     console.log('Checking authentication status...')
 
     try {
-      // Get current session with better error handling
+      // Get current session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession()
       
       if (sessionError) {
         console.error('Session error:', sessionError)
-        
-        // Handle specific refresh token errors
-        if (sessionError.message?.includes('Refresh Token Not Found') || 
-            sessionError.message?.includes('Invalid Refresh Token')) {
-          console.log('Refresh token error - clearing session and redirecting to login')
-          // Clear all authentication state
-          await clearAuthState()
-          setUser(null)
-          setAdminUser(null)
-          return
-        }
-        
         setUser(null)
         setAdminUser(null)
         return
@@ -59,7 +47,7 @@ export default function AdminPage() {
       if (!session?.user) {
         console.log('No authenticated user found')
         setUser(null)
-        setAdminUser(null)
+          setAdminUser(null)
         return
       }
 
@@ -106,16 +94,6 @@ export default function AdminPage() {
 
     } catch (error) {
       console.error('Error in checkAuthStatus:', error)
-      
-      // Handle refresh token errors in catch block too
-      if (error instanceof Error && (
-        error.message?.includes('Refresh Token Not Found') || 
-        error.message?.includes('Invalid Refresh Token')
-      )) {
-        console.log('Refresh token error in catch block - clearing session')
-        await clearAuthState()
-      }
-      
       setUser(null)
       setAdminUser(null)
     } finally {
@@ -139,11 +117,10 @@ export default function AdminPage() {
           checkAuthStatus()
         }, 500)
       } else if (event === 'SIGNED_OUT') {
-        console.log('Auth state change - user signed out')
         setUser(null)
         setAdminUser(null)
         setAuthLoading(false)
-      }
+    }
     })
 
     return () => {
@@ -162,14 +139,11 @@ export default function AdminPage() {
   const handleLogout = async () => {
     console.log('Logging out...')
     try {
-      await clearAuthState()
+      await supabase.auth.signOut()
       setUser(null)
       setAdminUser(null)
     } catch (error) {
       console.error('Logout error:', error)
-      // Even if logout fails, clear the state
-      setUser(null)
-      setAdminUser(null)
     }
   }
 

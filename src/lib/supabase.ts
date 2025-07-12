@@ -7,16 +7,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables. Please check your .env.local file.')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-    storageKey: 'dailit-admin-auth',
-    flowType: 'pkce'
-  }
-})
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Types for our database tables
 export interface Lead {
@@ -238,133 +229,62 @@ export interface AdminUser {
   updated_at: string
 }
 
-// Authentication functions
+// Admin Authentication functions only
+// Admin sign in function
 export const signInWithEmail = async (email: string, password: string) => {
   try {
-    // Clear any existing session first to avoid refresh token conflicts
-    await supabase.auth.signOut()
-    
+    // First check if the email exists in admin_users table and is active
+    const { data: adminUser, error: adminError } = await supabase
+      .from('admin_users')
+      .select('email, is_active')
+      .eq('email', email)
+      .eq('is_active', true)
+      .maybeSingle()
+
+    if (adminError) {
+      console.error('Error checking admin user:', adminError)
+      throw new Error('Database error during authentication')
+    }
+
+    if (!adminUser) {
+      throw new Error('Invalid credentials or account not found')
+    }
+
+    // If admin user exists and is active, attempt sign in
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password,
+      password
     })
 
     if (error) {
-      console.error('Error signing in:', error)
-      
-      // Handle specific refresh token errors
-      if (error.message?.includes('Refresh Token Not Found') || 
-          error.message?.includes('Invalid Refresh Token')) {
-        console.log('Refresh token error during sign in - clearing session')
-        await supabase.auth.signOut()
-        throw new Error('Session expired. Please try logging in again.')
-      }
-      
+      console.error('Authentication error:', error)
       throw error
     }
+
+    // Update last login timestamp
+    await updateLastLogin(email)
 
     return data
-  } catch (error) {
-    console.error('Sign in error:', error)
-    throw error
-  }
-}
-
-export const signOut = async () => {
-  try {
-    const { error } = await supabase.auth.signOut()
-
-    if (error) {
-      console.error('Error signing out:', error)
-      throw error
-    }
-  } catch (error) {
-    console.error('Sign out error:', error)
-    // Even if sign out fails, clear local storage
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('dailit-admin-auth')
-      localStorage.removeItem('sb-' + supabaseUrl.split('//')[1].split('.')[0] + '-auth-token')
-    }
-    throw error
-  }
-}
-
-// Utility function to clear all authentication state
-export const clearAuthState = async () => {
-  try {
-    await supabase.auth.signOut()
-  } catch (error) {
-    console.log('Error during sign out:', error)
-  }
-  
-  // Clear all possible auth-related localStorage items
-  if (typeof window !== 'undefined') {
-    const keysToRemove = []
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)
-      if (key && (key.includes('auth') || key.includes('supabase') || key.includes('dailit-admin'))) {
-        keysToRemove.push(key)
-      }
-    }
-    
-    keysToRemove.forEach(key => {
-      localStorage.removeItem(key)
-    })
-    
-    console.log('Cleared authentication state')
-  }
-}
-
-export const getCurrentUser = async () => {
-  try {
-    // First check if session exists to avoid AuthSessionMissingError
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-    
-    if (sessionError) {
-      console.error('Error getting session:', sessionError)
-      
-      // Handle refresh token errors
-      if (sessionError.message?.includes('Refresh Token Not Found') || 
-          sessionError.message?.includes('Invalid Refresh Token')) {
-        console.log('Refresh token error in getCurrentUser - clearing session')
-        await supabase.auth.signOut()
-        return null
-      }
-      
-      throw sessionError
-    }
-    
-    if (!session) {
-      return null
-    }
-
-    const { data: { user }, error } = await supabase.auth.getUser()
-
-    if (error) {
-      console.error('Error getting current user:', error)
-      
-      // Handle refresh token errors
-      if (error.message?.includes('Refresh Token Not Found') || 
-          error.message?.includes('Invalid Refresh Token')) {
-        console.log('Refresh token error in getUser - clearing session')
-        await supabase.auth.signOut()
-        return null
-      }
-      
-      throw error
-    }
-
-    return user
-  } catch (error) {
-    console.error('getCurrentUser error:', error)
-    return null
+  } catch (err: any) {
+    console.error('Sign in error:', err)
+    throw err
   }
 }
 
 export const getCurrentAdminUser = async () => {
-  const user = await getCurrentUser()
-  if (!user) return null
+  // Get current user session directly
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+  
+  if (sessionError) {
+    console.error('Error getting session:', sessionError)
+    return null
+  }
+  
+  if (!session?.user) {
+    return null
+  }
 
+  const user = session.user
   console.log('Looking up admin user for:', user.email)
 
   try {
@@ -416,9 +336,7 @@ export const updateLastLogin = async (email: string) => {
 }
 
 // Listen to auth state changes
-export const onAuthStateChange = (callback: (event: string, session: any) => void) => {
-  return supabase.auth.onAuthStateChange(callback)
-}
+// Removed onAuthStateChange - old login logic
 
 // Password reset for admin users only
 export const resetPasswordForAdmin = async (email: string) => {
@@ -609,4 +527,4 @@ export const getAdminUsersSummary = async () => {
     console.error('Error getting admin users summary:', err)
     throw err
   }
-} 
+}

@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from './ui/Button'
 
 interface HeaderProps {
@@ -179,22 +178,7 @@ const Header = ({ onRequestAccess, onLoginClick }: HeaderProps) => {
               >
                 Contact
               </Link>
-              <div className="flex flex-col space-y-3 pt-4 border-t border-gray-100">
-                <button 
-                  onClick={handleSignInClick}
-                  className="text-sm font-normal text-gray-600 hover:text-gray-900 transition-colors px-2 py-2 text-left"
-                >
-                  Sign in
-                </button>
-                <Button 
-                  variant="primary" 
-                  size="sm"
-                  className="bg-primary hover:bg-primary-800 text-white border-0 font-normal mx-2"
-                  onClick={handleRequestAccess}
-                >
-                  Request Access
-                </Button>
-              </div>
+
             </div>
           </div>
         )}
@@ -204,4 +188,4 @@ const Header = ({ onRequestAccess, onLoginClick }: HeaderProps) => {
   )
 }
 
-export default Header 
+export default Header

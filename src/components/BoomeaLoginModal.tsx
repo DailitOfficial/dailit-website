@@ -17,13 +17,11 @@ const BoomeaLoginModal = ({ isOpen, onClose, onSwitchToRequestAccess }: BoomeaLo
   })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [showSuccess, setShowSuccess] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
-    setShowSuccess(false)
 
     try {
       const credentials: BoomeaLoginCredentials = {
@@ -42,32 +40,15 @@ const BoomeaLoginModal = ({ isOpen, onClose, onSwitchToRequestAccess }: BoomeaLo
         return
       }
 
-      if (!authResult.token) {
-        setError('Authentication failed. No session token received.')
-        setIsLoading(false)
-        return
-      }
-
-      console.log('✅ Authentication successful, preparing redirect...')
+      console.log('✅ Authentication successful, redirecting...')
 
       // Step 2: Store authentication data
-      boomeaAuthService.storeAuthData(authResult.token, formData.email, authResult.user)
+      boomeaAuthService.storeAuthData(authResult.token || 'verified', formData.email, authResult.user)
 
-      // Step 3: Show success message
-      setShowSuccess(true)
-      setError(null)
-      setIsLoading(false)
-      
-      // Step 4: Redirect to Boomea dashboard with improved method
-      if (authResult.teamSlug) {
-        console.log('🏢 Using team slug for redirect:', authResult.teamSlug)
-        boomeaAuthService.redirectToDashboardWithTeam(authResult.teamSlug)
-      } else {
-        console.log('🔄 Using fallback redirect')
-        boomeaAuthService.redirectToDashboard('general')
-      }
+      // Step 3: Redirect to Boomea dashboard
+      boomeaAuthService.redirectToDashboard('general')
 
-      // Step 5: Close the modal and reset form
+      // Step 4: Close the modal and reset form
       handleClose()
       
     } catch (err: any) {
@@ -88,7 +69,6 @@ const BoomeaLoginModal = ({ isOpen, onClose, onSwitchToRequestAccess }: BoomeaLo
     setFormData({ email: '', password: '' })
     setError(null)
     setIsLoading(false)
-    setShowSuccess(false)
     onClose()
   }
 
@@ -116,28 +96,6 @@ const BoomeaLoginModal = ({ isOpen, onClose, onSwitchToRequestAccess }: BoomeaLo
             </svg>
           </button>
         </div>
-
-        {/* Success Message */}
-        {showSuccess && (
-          <div className="bg-green-50 border border-green-200 rounded-md p-4 mb-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-green-800">
-                  Authentication Successful!
-                </h3>
-                <div className="mt-2 text-sm text-green-700">
-                  <p>Your credentials have been verified with Boomea.</p>
-                  <p className="mt-1">You will be redirected to Boomea's login page where you can sign in with the same credentials.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -188,7 +146,7 @@ const BoomeaLoginModal = ({ isOpen, onClose, onSwitchToRequestAccess }: BoomeaLo
             className="w-full"
             disabled={isLoading}
           >
-            {isLoading ? 'Verifying Credentials...' : 'Sign In to Boomea'}
+            {isLoading ? 'Verifying...' : 'Sign In to Boomea'}
           </Button>
         </form>
 

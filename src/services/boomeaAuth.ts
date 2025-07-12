@@ -36,7 +36,7 @@ class BoomeaAuthService {
 
   /**
    * Authenticate user with Boomea API using Session Token Authentication
-   * Based on official Boomea API documentation
+   * Simplified version that just verifies credentials
    */
   async login(credentials: BoomeaLoginCredentials): Promise<BoomeaAuthResponse> {
     try {
@@ -52,8 +52,6 @@ class BoomeaAuthService {
           login_id: credentials.email,
           password: credentials.password
         })
-        // Note: credentials: 'include' removed to avoid CORS issues
-        // Boomea will still set cookies automatically in the response
       })
 
       console.log('📡 API Response Status:', response.status, response.statusText)
@@ -90,36 +88,31 @@ class BoomeaAuthService {
         }
       }
 
-      // Extract session token from response headers
-      const sessionToken = response.headers.get('token')
-      if (!sessionToken) {
-        console.error('❌ No session token received from Boomea API')
-        return {
-          success: false,
-          error: 'Authentication failed. No session token received from Boomea API.'
-        }
-      }
-
+      // If we get here, authentication was successful
       console.log('✅ Authentication successful!')
-      console.log('🎫 Session token received:', sessionToken)
 
-      // Get user information and team details
-      const userInfo = await this.getUserInfo(sessionToken)
-      if (!userInfo.success) {
-        return {
-          success: false,
-          error: 'Failed to retrieve user information.'
-        }
+      // Try to get user data from response body
+      let userData = null
+      try {
+        userData = await response.json()
+        console.log('👤 User data received:', userData)
+      } catch (e) {
+        console.log('⚠️ Could not parse user data from response')
       }
 
-      // Get team/workspace information
-      const teamSlug = await this.getTeamSlug(sessionToken, userInfo.user!)
+      // Try to get token from headers
+      const sessionToken = response.headers.get('token')
+      if (sessionToken) {
+        console.log('🎫 Session token received:', sessionToken)
+      } else {
+        console.log('⚠️ No session token in headers')
+      }
 
       return {
         success: true,
-        token: sessionToken,
-        user: userInfo.user,
-        teamSlug: teamSlug
+        token: sessionToken || 'verified',
+        user: userData,
+        teamSlug: 'general'
       }
 
     } catch (error) {
@@ -132,81 +125,16 @@ class BoomeaAuthService {
   }
 
   /**
-   * Get user information using the session token
-   */
-  private async getUserInfo(token: string): Promise<{ success: boolean; user?: BoomeaUser; error?: string }> {
-    try {
-      const response = await fetch(`${this.API_BASE_URL}/users/me`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        }
-      })
-
-      if (!response.ok) {
-        console.error('Failed to get user info:', response.status)
-        return { success: false, error: 'Failed to retrieve user information' }
-      }
-
-      const userData: BoomeaUser = await response.json()
-      console.log('👤 User info retrieved:', userData)
-      
-      return { success: true, user: userData }
-    } catch (error) {
-      console.error('Error getting user info:', error)
-      return { success: false, error: 'Failed to retrieve user information' }
-    }
-  }
-
-  /**
-   * Get team/workspace slug for the user
-   * This determines which workspace URL to redirect to
-   */
-  private async getTeamSlug(token: string, user: BoomeaUser): Promise<string> {
-    try {
-      // First try to get user's teams
-      const response = await fetch(`${this.API_BASE_URL}/users/me/teams`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        }
-      })
-
-      if (response.ok) {
-        const teams = await response.json()
-        if (teams && teams.length > 0) {
-          // Use the first team's name as the slug
-          const teamSlug = teams[0].name?.toLowerCase().replace(/\s+/g, '-') || 'general'
-          console.log('🏢 Team slug determined:', teamSlug)
-          return teamSlug
-        }
-      }
-
-      // Fallback: use username or email prefix as team slug
-      const fallbackSlug = user.username || user.email.split('@')[0]
-      console.log('🔄 Using fallback team slug:', fallbackSlug)
-      return fallbackSlug
-    } catch (error) {
-      console.error('Error getting team slug:', error)
-      // Final fallback
-      return 'general'
-    }
-  }
-
-  /**
-   * Redirect user to their Boomea workspace
-   * Since we can't set cross-domain cookies, we'll redirect with instructions
+   * Simple redirect to Boomea login page
    */
   redirectToDashboard(teamSlug: string): void {
     try {
-      // Redirect directly to Boomea's login page with the target URL
+      // Simple redirect to Boomea's login page
       const dashboardUrl = `${this.DASHBOARD_URL}/login?redirect_to=%2Frio%2Fchannels%2Fgeneral`
-      console.log('🚀 Redirecting to Boomea login with redirect parameter:', dashboardUrl)
+      console.log('🚀 Redirecting to Boomea login:', dashboardUrl)
       
-      // Show a message to the user before redirecting
-      const message = `✅ Authentication Successful!\n\nYour credentials have been verified with Boomea.\n\nYou will now be redirected to Boomea's login page.\n\nPlease log in with the same credentials:\n• Email: ${localStorage.getItem('boomea_email') || 'your email'}\n• Password: (the password you just entered)\n\nThis is required due to browser security restrictions.`
+      // Show a simple message to the user
+      const message = `✅ Credentials verified!\n\nYou will now be redirected to Boomea's login page.\n\nPlease log in with the same credentials you just entered.`
       
       if (confirm(message)) {
         window.location.href = dashboardUrl
@@ -219,26 +147,10 @@ class BoomeaAuthService {
   }
 
   /**
-   * Alternative redirect method that provides better user experience
+   * Alternative redirect method
    */
   redirectToDashboardWithTeam(teamSlug: string): void {
-    try {
-      // Since we can't set cross-domain cookies, we'll redirect to Boomea's login
-      // with the target URL as a parameter
-      const dashboardUrl = `${this.DASHBOARD_URL}/login?redirect_to=%2Frio%2Fchannels%2Fgeneral`
-      console.log('🚀 Redirecting to Boomea login with redirect parameter:', dashboardUrl)
-      
-      // Show a message to the user before redirecting
-      const message = `✅ Authentication Successful!\n\nYour credentials have been verified with Boomea.\n\nYou will now be redirected to Boomea's login page.\n\nPlease log in with the same credentials:\n• Email: ${localStorage.getItem('boomea_email') || 'your email'}\n• Password: (the password you just entered)\n\nThis is required due to browser security restrictions.`
-      
-      if (confirm(message)) {
-        window.location.href = dashboardUrl
-      }
-    } catch (error) {
-      console.error('Dashboard redirect error:', error)
-      // Fallback to general dashboard
-      window.location.href = this.DASHBOARD_URL
-    }
+    this.redirectToDashboard(teamSlug)
   }
 
   /**

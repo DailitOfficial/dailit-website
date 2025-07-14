@@ -11,7 +11,7 @@ import { About } from './About'
 import { Contact } from './Contact'
 import Footer from './Footer'
 import RequestAccessModal from './RequestAccessModal'
-import BoomeaLoginModal from './BoomeaLoginModal'
+import LoginModal from './LoginModal'
 
 const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -20,18 +20,16 @@ const HomePage = () => {
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
   
-  const openLoginModal = () => setIsLoginModalOpen(true)
-  const closeLoginModal = () => setIsLoginModalOpen(false)
-  
-  const switchToLogin = () => {
-    setIsModalOpen(false)
+  const openLoginModal = () => {
     setIsLoginModalOpen(true)
+    // Trigger PWA install prompt when user tries to login
+    setTimeout(() => {
+      const event = new CustomEvent('showPWAPrompt')
+      window.dispatchEvent(event)
+    }, 1000) // Short delay to show modal first
   }
   
-  const switchToRequestAccess = () => {
-    setIsLoginModalOpen(false)
-    setIsModalOpen(true)
-  }
+  const closeLoginModal = () => setIsLoginModalOpen(false)
 
   return (
     <>
@@ -48,18 +46,10 @@ const HomePage = () => {
           <Footer />
         </div>
       </div>
-      <RequestAccessModal 
-        isOpen={isModalOpen} 
-        onClose={closeModal} 
-        onSwitchToLogin={switchToLogin}
-      />
-      <BoomeaLoginModal 
-        isOpen={isLoginModalOpen} 
-        onClose={closeLoginModal}
-        onSwitchToRequestAccess={switchToRequestAccess}
-      />
+      <RequestAccessModal isOpen={isModalOpen} onClose={closeModal} />
+      <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
     </>
   )
 }
 
-export default HomePage
+export default HomePage 

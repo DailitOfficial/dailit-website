@@ -3,7 +3,6 @@ import "./globals.css";
 import PWAWrapper from "@/components/PWAWrapper";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://dailit.com'),
   title: "Dail it. - Simple Business Phone System",
   description: "Transform your business communications with Dail it.'s simple, powerful phone system. Get professional features, DailQ AI automation, and seamless integrations.",
   keywords: "business phone system, VoIP, DailQ AI, call center, unified messaging, business communications, phone service",
@@ -111,4 +110,4 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+} 

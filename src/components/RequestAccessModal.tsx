@@ -6,10 +6,9 @@ import { Button } from './ui/Button'
 interface RequestAccessModalProps {
   isOpen: boolean
   onClose: () => void
-  onSwitchToLogin?: () => void
 }
 
-const RequestAccessModal = ({ isOpen, onClose, onSwitchToLogin }: RequestAccessModalProps) => {
+const RequestAccessModal = ({ isOpen, onClose }: RequestAccessModalProps) => {
   const [formData, setFormData] = useState({
     businessName: '',
     fullName: '',
@@ -291,23 +290,6 @@ const RequestAccessModal = ({ isOpen, onClose, onSwitchToLogin }: RequestAccessM
               >
                 Close
               </Button>
-              
-              {/* Additional Info */}
-              <div className="mt-4 text-center">
-                <p className="text-xs text-gray-500">
-                  Already have Boomea credentials?{' '}
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      handleClose()
-                      onSwitchToLogin?.()
-                    }}
-                    className="text-primary-600 hover:text-primary-700 font-medium"
-                  >
-                    Sign In Here
-                  </button>
-                </p>
-              </div>
             </div>
           )}
         </div>
@@ -316,4 +298,4 @@ const RequestAccessModal = ({ isOpen, onClose, onSwitchToLogin }: RequestAccessM
   )
 }
 
-export default RequestAccessModal
+export default RequestAccessModal 

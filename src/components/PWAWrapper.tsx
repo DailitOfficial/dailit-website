@@ -20,7 +20,8 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [loginAttempted, setLoginAttempted] = useState(false)
   const [promptDismissed, setPromptDismissed] = useState(false)
 
   useEffect(() => {
@@ -30,9 +31,21 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     const installed = isStandalone || isInWebAppiOS
     setIsInstalled(installed)
 
+    // Check login state from localStorage
+    const loginState = localStorage.getItem('dailit-login-state')
+    const isUserLoggedIn = loginState === 'logged-in'
+    setIsLoggedIn(isUserLoggedIn)
+
     // Check if prompt was previously dismissed in this session
     const wasPromptDismissed = localStorage.getItem('pwa-prompt-dismissed') === 'true'
     setPromptDismissed(wasPromptDismissed)
+
+    // If PWA is installed and user is logged in, redirect to portal
+    if (installed && isUserLoggedIn && window.location.hostname !== 'portal.dailit.com') {
+      console.log('🔄 PWA: User is logged in, redirecting to portal...')
+      window.location.href = 'https://portal.dailit.com'
+      return
+    }
 
     // Listen for beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -41,7 +54,29 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       // Don't show prompt automatically anymore
     }
 
-
+    // Listen for login attempts to show PWA install prompt
+    const handleLoginAttempt = () => {
+      setLoginAttempted(true)
+      
+      // Check current installation status in real-time
+      const currentlyStandalone = window.matchMedia('(display-mode: standalone)').matches
+      const currentlyInWebAppiOS = (window.navigator as any).standalone
+      const currentlyInstalled = currentlyStandalone || currentlyInWebAppiOS
+      
+      console.log('🔍 PWA: Login attempt - checking installation status:', {
+        standalone: currentlyStandalone,
+        iosWebApp: currentlyInWebAppiOS,
+        installed: currentlyInstalled,
+        isInstalledState: isInstalled
+      })
+      
+      if (!currentlyInstalled && !isInstalled && !promptDismissed) {
+        console.log('📱 PWA: Not installed, showing install prompt')
+        setShowInstallPrompt(true)
+      } else {
+        console.log('✅ PWA: Already installed or prompt dismissed, skipping prompt')
+      }
+    }
 
     // Listen for app installed event
     const handleAppInstalled = () => {
@@ -58,14 +93,54 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       requestAllPermissionsAfterInstall()
     }
 
+    // Listen for login state changes from other components
+    const handleLoginStateChange = (event: CustomEvent) => {
+      const { isLoggedIn: newLoginState } = event.detail
+      setIsLoggedIn(newLoginState)
+      localStorage.setItem('dailit-login-state', newLoginState ? 'logged-in' : 'logged-out')
+      
+      if (installed) {
+        if (newLoginState) {
+          console.log('✅ PWA: User logged in, redirecting to portal...')
+          window.location.href = 'https://portal.dailit.com'
+        } else {
+          console.log('🚪 PWA: User logged out, redirecting to main site...')
+          window.location.href = 'https://dailit.com'
+        }
+      }
+    }
 
+    // Listen for storage changes (logout from portal)
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'dailit-login-state') {
+        const newValue = event.newValue
+        setIsLoggedIn(newValue === 'logged-in')
+        
+        if (installed && newValue === 'logged-out' && window.location.hostname === 'portal.dailit.com') {
+          console.log('🚪 PWA: Logout detected, redirecting to main site...')
+          window.location.href = 'https://dailit.com'
+        }
+      }
+    }
 
-
-
-
+    // Listen for messages from portal (logout events)
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin === 'https://portal.dailit.com' && event.data?.type === 'logout') {
+        console.log('🚪 PWA: Logout message received from portal')
+        setIsLoggedIn(false)
+        localStorage.setItem('dailit-login-state', 'logged-out')
+        if (installed) {
+          window.location.href = 'https://dailit.com'
+        }
+      }
+    }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
     window.addEventListener('appinstalled', handleAppInstalled)
+    window.addEventListener('loginStateChange', handleLoginStateChange as EventListener)
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('message', handleMessage)
+    window.addEventListener('showPWAPrompt', handleLoginAttempt as EventListener)
 
     // Setup notification handling for already installed PWAs
     if (installed) {
@@ -75,6 +150,10 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
       window.removeEventListener('appinstalled', handleAppInstalled)
+      window.removeEventListener('loginStateChange', handleLoginStateChange as EventListener)
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('message', handleMessage)
+      window.removeEventListener('showPWAPrompt', handleLoginAttempt as EventListener)
     }
   }, [])
 
@@ -315,4 +394,4 @@ export default function PWAWrapper({ children }: { children: React.ReactNode }) 
       )}
     </>
   )
-}
+} 

@@ -229,62 +229,57 @@ export interface AdminUser {
   updated_at: string
 }
 
-// Admin Authentication functions only
-// Admin sign in function
+// Authentication functions
 export const signInWithEmail = async (email: string, password: string) => {
-  try {
-    // First check if the email exists in admin_users table and is active
-    const { data: adminUser, error: adminError } = await supabase
-      .from('admin_users')
-      .select('email, is_active')
-      .eq('email', email)
-      .eq('is_active', true)
-      .maybeSingle()
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
 
-    if (adminError) {
-      console.error('Error checking admin user:', adminError)
-      throw new Error('Database error during authentication')
-    }
+  if (error) {
+    console.error('Error signing in:', error)
+    throw error
+  }
 
-    if (!adminUser) {
-      throw new Error('Invalid credentials or account not found')
-    }
+  return data
+}
 
-    // If admin user exists and is active, attempt sign in
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
+export const signOut = async () => {
+  const { error } = await supabase.auth.signOut()
 
-    if (error) {
-      console.error('Authentication error:', error)
-      throw error
-    }
-
-    // Update last login timestamp
-    await updateLastLogin(email)
-
-    return data
-  } catch (err: any) {
-    console.error('Sign in error:', err)
-    throw err
+  if (error) {
+    console.error('Error signing out:', error)
+    throw error
   }
 }
 
-export const getCurrentAdminUser = async () => {
-  // Get current user session directly
+export const getCurrentUser = async () => {
+  // First check if session exists to avoid AuthSessionMissingError
   const { data: { session }, error: sessionError } = await supabase.auth.getSession()
   
   if (sessionError) {
     console.error('Error getting session:', sessionError)
-    return null
+    throw sessionError
   }
   
-  if (!session?.user) {
+  if (!session) {
     return null
   }
 
-  const user = session.user
+  const { data: { user }, error } = await supabase.auth.getUser()
+
+  if (error) {
+    console.error('Error getting current user:', error)
+    throw error
+  }
+
+  return user
+}
+
+export const getCurrentAdminUser = async () => {
+  const user = await getCurrentUser()
+  if (!user) return null
+
   console.log('Looking up admin user for:', user.email)
 
   try {
@@ -336,7 +331,9 @@ export const updateLastLogin = async (email: string) => {
 }
 
 // Listen to auth state changes
-// Removed onAuthStateChange - old login logic
+export const onAuthStateChange = (callback: (event: string, session: any) => void) => {
+  return supabase.auth.onAuthStateChange(callback)
+}
 
 // Password reset for admin users only
 export const resetPasswordForAdmin = async (email: string) => {
@@ -527,4 +524,4 @@ export const getAdminUsersSummary = async () => {
     console.error('Error getting admin users summary:', err)
     throw err
   }
-}
+} 

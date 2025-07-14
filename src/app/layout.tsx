@@ -103,11 +103,11 @@ export default function RootLayout({
         <meta name="msapplication-tap-highlight" content="no" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning={true}>
         <PWAWrapper>
         {children}
         </PWAWrapper>
       </body>
     </html>
   );
-} 
+}

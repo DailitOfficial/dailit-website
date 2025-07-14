@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { signInWithEmail, resetPasswordForAdmin, recordPasswordChange, supabase } from '../lib/supabase'
+import { signInWithEmail, resetPasswordForAdmin, recordPasswordChange, supabase } from '../../../admin/lib/supabase-admin'
 
 interface AdminLoginProps {
   onLoginSuccess: () => void
@@ -517,4 +517,4 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
       </div>
     </div>
   )
-} 
+}

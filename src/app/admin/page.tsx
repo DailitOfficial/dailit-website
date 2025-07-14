@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { supabase } from '@/lib/supabase'
-import AdminLogin from '@/components/AdminLogin'
-import AdminDashboard from '@/components/AdminDashboard'
+import { supabase, getCurrentAdminUser } from '../../../admin/lib/supabase-admin'
+import { AdminLogin, AdminDashboard } from '@/components/admin'
 import type { User } from '@supabase/supabase-js'
-import type { AdminUser } from '@/lib/supabase'
+import type { AdminUser } from '../../../admin/lib/supabase-admin'
 
 export default function AdminPage() {
   const [user, setUser] = useState<User | null>(null)
@@ -150,10 +149,10 @@ export default function AdminPage() {
   // Show loading state
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff6b35] mx-auto"></div>
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8" suppressHydrationWarning={true}>
+        <div className="sm:mx-auto sm:w-full sm:max-w-md" suppressHydrationWarning={true}>
+        <div className="text-center" suppressHydrationWarning={true}>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff6b35] mx-auto" suppressHydrationWarning={true}></div>
             <p className="mt-4 text-sm text-gray-600">
               {isProcessingAuth ? 'Checking authentication...' : 'Loading...'}
           </p>
@@ -179,4 +178,4 @@ export default function AdminPage() {
       onLogout={handleLogout}
     />
   )
-} 
+}

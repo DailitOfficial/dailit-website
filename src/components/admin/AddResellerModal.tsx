@@ -38,9 +38,9 @@ export default function AddResellerModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <h2 className="text-xl text-gray-900 mb-6">Add New Reseller</h2>
+      <div className="bg-white rounded-lg w-full max-w-md sm:max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6">Add New Reseller</h2>
           
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
@@ -117,11 +117,11 @@ export default function AddResellerModal({
               />
             </div>
 
-            <div className="flex justify-end space-x-3 pt-4">
+            <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-4">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                className="w-full sm:w-auto px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 text-sm sm:text-base"
                 disabled={submitting}
               >
                 Cancel
@@ -129,7 +129,7 @@ export default function AddResellerModal({
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 text-sm sm:text-base"
               >
                 {submitting ? 'Adding...' : 'Add Reseller'}
               </button>

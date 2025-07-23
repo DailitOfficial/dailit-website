@@ -622,22 +622,22 @@ export default function AdminDashboard({ adminUser, onLogout }: AdminDashboardPr
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 space-y-3 sm:space-y-0">
             <div className="flex items-center">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mr-3">
                 <span className="text-white font-cal-sans font-medium">D</span>
               </div>
-              <h1 className="text-xl font-cal-sans text-gray-900">
+              <h1 className="text-lg sm:text-xl font-cal-sans text-gray-900">
                 Dail it Admin Dashboard
               </h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
               <span className="text-sm text-gray-600">
                 Welcome, {adminUser.full_name}
               </span>
               <button
                 onClick={onLogout}
-                className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                className="w-full sm:w-auto bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 Sign Out
               </button>
@@ -649,10 +649,10 @@ export default function AdminDashboard({ adminUser, onLogout }: AdminDashboardPr
       {/* Navigation Tabs */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="border-b border-gray-200 mb-6">
-          <nav className="-mb-px flex space-x-8 overflow-x-auto">
+          <nav className="-mb-px flex space-x-2 sm:space-x-8 overflow-x-auto scrollbar-hide pb-2">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+              className={`py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-shrink-0 ${
                 activeTab === 'overview'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -662,77 +662,84 @@ export default function AdminDashboard({ adminUser, onLogout }: AdminDashboardPr
             </button>
             <button
               onClick={() => setActiveTab('users')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+              className={`py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-shrink-0 ${
                 activeTab === 'users'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Users ({subscriptionUsers.length})
+              <span className="hidden sm:inline">Users ({subscriptionUsers.length})</span>
+              <span className="sm:hidden">Users</span>
             </button>
             <button
               onClick={() => setActiveTab('payments')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+              className={`py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-shrink-0 ${
                 activeTab === 'payments'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Payments ({paymentSummary.length})
+              <span className="hidden sm:inline">Payments ({paymentSummary.length})</span>
+              <span className="sm:hidden">Payments</span>
             </button>
             <button
               onClick={() => setActiveTab('reconciliation')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+              className={`py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-shrink-0 ${
                 activeTab === 'reconciliation'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Reconciliation
+              <span className="hidden sm:inline">Reconciliation</span>
+              <span className="sm:hidden">Recon</span>
             </button>
             <button
               onClick={() => setActiveTab('expiry')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+              className={`py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-shrink-0 ${
                 activeTab === 'expiry'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Expiring ({usersExpiringSoon.length})
+              <span className="hidden sm:inline">Expiring ({usersExpiringSoon.length})</span>
+              <span className="sm:hidden">Expiry</span>
             </button>
             <button
               onClick={() => setActiveTab('leads')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+              className={`py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-shrink-0 ${
                 activeTab === 'leads'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Leads ({leads.length})
+              <span className="hidden sm:inline">Leads ({leads.length})</span>
+              <span className="sm:hidden">Leads</span>
             </button>
             <button
               onClick={() => setActiveTab('contacts')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+              className={`py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-shrink-0 ${
                 activeTab === 'contacts'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Contacts ({contacts.length})
+              <span className="hidden sm:inline">Contacts ({contacts.length})</span>
+              <span className="sm:hidden">Contacts</span>
             </button>
             <button
               onClick={() => setActiveTab('managers')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+              className={`py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-shrink-0 ${
                 activeTab === 'managers'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Managers ({managers.length})
+              <span className="hidden sm:inline">Managers ({managers.length})</span>
+              <span className="sm:hidden">Managers</span>
             </button>
             <button
               onClick={() => setActiveTab('resellers')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+              className={`py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-shrink-0 ${
                 activeTab === 'resellers'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -771,7 +778,7 @@ export default function AdminDashboard({ adminUser, onLogout }: AdminDashboardPr
         {activeTab === 'overview' && (
           <div className="space-y-6">
             {/* Key Metrics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {/* User Metrics */}
               <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
                 <div className="flex items-center justify-between">
@@ -808,7 +815,7 @@ export default function AdminDashboard({ adminUser, onLogout }: AdminDashboardPr
             </div>
 
             {/* Status Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               <div className="bg-white rounded-lg shadow p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">User Status</h3>
                 <div className="space-y-3">
@@ -885,7 +892,7 @@ export default function AdminDashboard({ adminUser, onLogout }: AdminDashboardPr
             {/* Quick Actions */}
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
                 <button
                   onClick={() => setActiveTab('users')}
                   className="flex flex-col items-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
@@ -932,7 +939,7 @@ export default function AdminDashboard({ adminUser, onLogout }: AdminDashboardPr
             </div>
 
             {/* Recent Activity & Alerts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {/* Recent Activity */}
               <div className="bg-white rounded-lg shadow">
                 <div className="p-6 border-b border-gray-200">

@@ -86,12 +86,12 @@ export default function ResellersTable() {
 
   return (
     <div className="bg-white rounded-lg shadow">
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg text-gray-900">Resellers</h3>
+      <div className="p-4 sm:p-6 border-b border-gray-200">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Resellers</h3>
           <button
             onClick={() => setShowAddModal(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm sm:text-base w-full sm:w-auto"
             disabled={managers.length === 0}
           >
             Add Reseller
@@ -108,22 +108,22 @@ export default function ResellersTable() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                 Phone
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                 Manager
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
@@ -131,19 +131,19 @@ export default function ResellersTable() {
           <tbody className="bg-white divide-y divide-gray-200">
             {resellers.map((reseller) => (
               <tr key={reseller.id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{reseller.name}</div>
+                <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900 truncate max-w-32 sm:max-w-none">{reseller.name}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{reseller.email}</div>
+                <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900 truncate max-w-32 sm:max-w-none">{reseller.email}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
                   <div className="text-sm text-gray-900">{reseller.phone || '-'}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{getManagerName(reseller.manager_id)}</div>
+                <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
+                  <div className="text-sm text-gray-900 truncate max-w-24">{getManagerName(reseller.manager_id)}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                     reseller.is_active 
                       ? 'bg-green-100 text-green-800' 
@@ -152,10 +152,10 @@ export default function ResellersTable() {
                     {reseller.is_active ? 'Active' : 'Inactive'}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <button
                     onClick={() => toggleResellerStatus(reseller)}
-                    className={`text-sm px-3 py-1 rounded ${
+                    className={`text-xs sm:text-sm px-2 sm:px-3 py-1 rounded ${
                       reseller.is_active
                         ? 'text-red-600 hover:text-red-900'
                         : 'text-green-600 hover:text-green-900'

@@ -7,10 +7,9 @@ import { Button } from './ui/Button'
 
 interface HeaderProps {
   onRequestAccess?: () => void
-  onLoginClick?: () => void
 }
 
-const Header = ({ onRequestAccess, onLoginClick }: HeaderProps) => {
+const Header = ({ onRequestAccess }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const toggleMenu = () => {
@@ -25,8 +24,8 @@ const Header = ({ onRequestAccess, onLoginClick }: HeaderProps) => {
   const handleSignInClick = (e: React.MouseEvent) => {
     e.preventDefault()
     setIsMenuOpen(false)
-    // Temporary redirect to external login
-    window.location.href = 'https://app.boomea.com/login'
+    // Redirect to app.dailit.com
+    window.location.href = 'https://app.dailit.com'
   }
 
   return (

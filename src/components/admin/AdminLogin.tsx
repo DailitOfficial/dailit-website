@@ -172,12 +172,11 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
           {/* Logo and Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="relative">
-                <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-                  <span className="text-white font-cal-sans font-medium text-xl">D</span>
-                </div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full" />
-              </div>
+              <img 
+                src="/logo light mode.svg" 
+                alt="Dail it. Logo" 
+                className="h-12 w-auto"
+              />
             </div>
             <h1 className="text-2xl sm:text-3xl font-cal-sans font-normal text-gray-900 mb-2">
               Set New Password
@@ -294,12 +293,11 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
           {/* Logo and Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-6">
-              <div className="relative">
-                <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-                  <span className="text-white font-cal-sans font-medium text-xl">D</span>
-                </div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full" />
-              </div>
+              <img 
+                src="/logo light mode.svg" 
+                alt="Dail it. Logo" 
+                className="h-12 w-auto"
+              />
             </div>
             <h1 className="text-2xl sm:text-3xl font-cal-sans font-normal text-gray-900 mb-2">
               Reset Password
@@ -410,12 +408,11 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
         {/* Logo and Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-6">
-            <div className="relative">
-              <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
-                <span className="text-white font-cal-sans font-medium text-xl">D</span>
-              </div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full" />
-            </div>
+            <img 
+              src="/logo light mode.svg" 
+              alt="Dail it. Logo" 
+              className="h-12 w-auto"
+            />
           </div>
           <h1 className="text-2xl sm:text-3xl font-cal-sans font-normal text-gray-900 mb-2">
             Admin Login

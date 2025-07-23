@@ -10,15 +10,11 @@ const Footer = () => {
           {/* Company */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="relative">
-                <div className="w-7 h-7 bg-primary rounded-md flex items-center justify-center">
-                  <span className="text-white font-cal-sans font-normal text-base">D</span>
-                </div>
-                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-accent rounded-full" />
-              </div>
-              <span className="font-cal-sans font-normal text-lg text-gray-900">
-                Dail it.
-              </span>
+              <img 
+                src="/logo light mode.svg" 
+                alt="Dail it. Logo" 
+                className="h-8 w-auto"
+              />
             </div>
             <p className="text-gray-600 max-w-sm text-sm leading-relaxed">
               The exclusive enterprise communication platform for organizations that demand excellence.
@@ -147,4 +143,4 @@ const Footer = () => {
   )
 }
 
-export default Footer 
+export default Footer

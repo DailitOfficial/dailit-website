@@ -35,15 +35,11 @@ const Header = ({ onRequestAccess }: HeaderProps) => {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div className="relative">
-                <div className="w-7 h-7 bg-primary rounded-md flex items-center justify-center">
-                  <span className="text-white font-cal-sans font-medium text-base">D</span>
-                </div>
-                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-accent rounded-full" />
-              </div>
-              <span className="font-cal-sans font-medium text-lg text-gray-900 group-hover:text-primary transition-colors">
-                Dail it.
-              </span>
+              <img 
+                src="/logo light mode.svg" 
+                alt="Dail it. Logo" 
+                className="h-8 w-auto group-hover:opacity-80 transition-opacity"
+              />
             </Link>
           </div>
 

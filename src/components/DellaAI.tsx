@@ -57,41 +57,41 @@ const industryUseCases = [
 
 const DellaAI = ({ onRequestAccess }: DellaAIProps) => {
   return (
-    <section id="della-ai" className="py-24 bg-white scroll-mt-16">
+    <section id="della-ai" className="py-16 sm:py-20 lg:py-24 bg-white scroll-mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-normal bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-200 mb-6">
+        <div className="text-center mb-12 sm:mb-16">
+          <div className="inline-flex items-center rounded-full px-3 py-1 text-xs font-normal bg-accent-50 text-accent-700 ring-1 ring-inset ring-accent-200 mb-4 sm:mb-6">
             Powered by AI
           </div>
           
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-cal-sans font-normal text-gray-900 mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-cal-sans font-normal text-gray-900 mb-4 sm:mb-6 px-2 sm:px-0">
             Meet DailQ AI
           </h2>
           
-          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
             Our advanced AI engine that transforms every customer interaction into an opportunity 
             for better service, higher satisfaction, and increased revenue.
           </p>
         </div>
 
         {/* AI Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-16 sm:mb-20">
           {aiFeatures.map((feature, index) => (
             <div key={index} className="group">
-              <div className="relative p-6 bg-gradient-to-br from-gray-25 to-white rounded-xl border border-gray-200 hover:border-accent-300 transition-all duration-300 hover:shadow-lg">
-                <div className="flex items-start mb-4">
-                  <div className="text-2xl mr-4 mt-1">{feature.icon}</div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-cal-sans font-normal text-gray-900 mb-2">
+              <div className="relative p-4 sm:p-6 bg-gradient-to-br from-gray-25 to-white rounded-xl border border-gray-200 hover:border-accent-300 transition-all duration-300 hover:shadow-lg">
+                <div className="flex items-start mb-3 sm:mb-4">
+                  <div className="text-xl sm:text-2xl mr-3 sm:mr-4 mt-1 flex-shrink-0">{feature.icon}</div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg sm:text-xl font-cal-sans font-normal text-gray-900 mb-2">
                       {feature.title}
                     </h3>
-                    <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-normal bg-success-50 text-success-700 mb-4">
+                    <div className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-normal bg-success-50 text-success-700 mb-3 sm:mb-4">
                       {feature.metric}
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-600 leading-relaxed">{feature.details}</p>
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">{feature.details}</p>
                 
                 {/* Hover Effect */}
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-accent-50/0 to-accent-50/0 group-hover:from-accent-50/30 group-hover:to-accent-50/10 transition-all duration-300 pointer-events-none" />
@@ -101,22 +101,22 @@ const DellaAI = ({ onRequestAccess }: DellaAIProps) => {
         </div>
 
         {/* Industry Use Cases */}
-        <div className="mb-20">
-          <h3 className="text-2xl sm:text-3xl font-cal-sans font-normal text-gray-900 mb-4 text-center">
+        <div className="mb-16 sm:mb-20">
+          <h3 className="text-xl sm:text-2xl lg:text-3xl font-cal-sans font-normal text-gray-900 mb-3 sm:mb-4 text-center px-2 sm:px-0">
             Industry Applications
           </h3>
-          <p className="text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 text-center mb-8 sm:mb-12 max-w-2xl mx-auto px-4 sm:px-0">
             See how DailQ AI adapts to different industries and use cases
           </p>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {industryUseCases.map((useCase, index) => (
-              <div key={index} className="text-center p-6 bg-gray-25 rounded-xl border border-gray-100">
-                <h4 className="text-xl font-cal-sans font-normal text-gray-900 mb-4">
+              <div key={index} className="text-center p-4 sm:p-6 bg-gray-25 rounded-xl border border-gray-100">
+                <h4 className="text-lg sm:text-xl font-cal-sans font-normal text-gray-900 mb-3 sm:mb-4">
                   {useCase.industry}
                 </h4>
-                <p className="text-gray-600 mb-4">{useCase.useCase}</p>
-                <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-normal bg-accent-50 text-accent-700">
+                <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">{useCase.useCase}</p>
+                <div className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-normal bg-accent-50 text-accent-700">
                   {useCase.improvement}
                 </div>
               </div>
@@ -161,4 +161,4 @@ const DellaAI = ({ onRequestAccess }: DellaAIProps) => {
   )
 }
 
-export default DellaAI 
+export default DellaAI
